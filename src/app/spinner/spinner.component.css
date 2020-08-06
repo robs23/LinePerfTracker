@@ -1,0 +1,14 @@
+.spinner-container{
+    display: flex;
+    position: relative;
+    background-color: black;
+    opacity: 30%;
+    margin: 0;
+    padding: 0%;
+    height: 100%;
+}
+
+.spinner{
+    top: 50%;
+    left: 50%;
+}

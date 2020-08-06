@@ -8,12 +8,14 @@ import { LinePerformanceComponent } from './line-performance/line-performance.co
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MaterialModule } from './material/material.module';
 import { FormsModule } from '@angular/forms';
+import { SpinnerComponent } from './spinner/spinner.component';
 
 @NgModule({
    declarations: [
       AppComponent,
       MachinesComponent,
-      LinePerformanceComponent
+      LinePerformanceComponent,
+      SpinnerComponent
    ],
    imports: [
       BrowserModule,
