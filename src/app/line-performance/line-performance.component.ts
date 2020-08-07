@@ -5,11 +5,20 @@ import { Component, OnInit } from '@angular/core';
   templateUrl: './line-performance.component.html',
   styleUrls: ['./line-performance.component.css']
 })
-export class LinePerformanceComponent implements OnInit {
+export class LinePerformanceComponent {
+  menuOpened = false;
+  menuButton;
+  
 
-  constructor() { }
-
-  ngOnInit() {
+  toggleMenu(){
+    if(this.menuOpened){
+      // Close menu
+      this.menuOpened = false;
+      
+    }else{
+      // Open menu
+      this.menuOpened = true;
+    }
+    
   }
-
 }

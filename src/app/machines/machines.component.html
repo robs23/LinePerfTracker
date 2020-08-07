@@ -1,5 +1,3 @@
-<ul class="machines">
-  <li *ngFor="let machine of machines">
-    <span class="badge">{{machine.ordinal}}</span>{{ machine.name}}
-  </li>
-</ul>
+<mat-nav-list>
+  <a *ngFor="let machine of machines" class="nav-item" mat-list-item routerLink="machine/{{ machine.id }}"><mat-icon [ngClass]="machine.state=='PR'?'green-icon':'red-icon'">stop_circle</mat-icon>  {{ machine.name}}</a>
+</mat-nav-list>

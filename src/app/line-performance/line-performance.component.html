@@ -1,1 +1,11 @@
-<app-spinner></app-spinner>
+<mat-sidenav-container>
+    <mat-sidenav mode="side" [(opened)]="menuOpened">
+      <app-machines></app-machines>
+    </mat-sidenav>
+    <mat-sidenav-content>
+      <button [ngClass]="menuOpened?'menuToggle-expanded':'menuToggle-collapsed'" id="menuToggle" mat-mini-fab color="primary" (click)="menuOpened=!menuOpened">
+        <mat-icon>menu</mat-icon>
+      </button>
+      <router-outlet name="main"></router-outlet>
+    </mat-sidenav-content>
+  </mat-sidenav-container>

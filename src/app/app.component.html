@@ -1,11 +1,1 @@
-<mat-sidenav-container>
-  <mat-sidenav mode="side" [(opened)]="menuOpened">
-    <app-machines></app-machines>
-  </mat-sidenav>
-  <mat-sidenav-content>
-    <button id="menuToggle" mat-mini-fab color="primary" (click)="menuOpened=!menuOpened">
-      <mat-icon>menu</mat-icon>
-    </button>
-    <app-line-performance></app-line-performance>
-  </mat-sidenav-content>
-</mat-sidenav-container>
+<router-outlet></router-outlet>

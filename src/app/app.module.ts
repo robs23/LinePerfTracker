@@ -9,13 +9,15 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MaterialModule } from './material/material.module';
 import { FormsModule } from '@angular/forms';
 import { SpinnerComponent } from './spinner/spinner.component';
+import { MachineComponent } from './machine/machine.component';
 
 @NgModule({
    declarations: [
       AppComponent,
       MachinesComponent,
       LinePerformanceComponent,
-      SpinnerComponent
+      SpinnerComponent,
+      MachineComponent
    ],
    imports: [
       BrowserModule,

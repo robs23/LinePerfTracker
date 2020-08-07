@@ -1,0 +1,15 @@
+a.nav-item{
+    color: white;
+}
+
+mat-icon{
+    margin-right:  10px;
+}
+
+.red-icon {
+    color: red;
+}
+
+.green-icon {
+    color: green;
+}
