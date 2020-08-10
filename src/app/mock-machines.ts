@@ -1,4 +1,5 @@
 import { Machine } from './machine';
+import { Identifiers } from '@angular/compiler';
 
 export const MACHINES: Machine[] = [
     {id: 1, name: 'Linia 01', state: 'PR'},
