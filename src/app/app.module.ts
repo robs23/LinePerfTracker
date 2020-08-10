@@ -10,6 +10,7 @@ import { MaterialModule } from './material/material.module';
 import { FormsModule } from '@angular/forms';
 import { SpinnerComponent } from './spinner/spinner.component';
 import { MachineComponent } from './machine/machine.component';
+import { WelcomeComponent } from './welcome/welcome.component';
 
 @NgModule({
    declarations: [
@@ -17,7 +18,8 @@ import { MachineComponent } from './machine/machine.component';
       MachinesComponent,
       LinePerformanceComponent,
       SpinnerComponent,
-      MachineComponent
+      MachineComponent,
+      WelcomeComponent
    ],
    imports: [
       BrowserModule,

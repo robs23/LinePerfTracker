@@ -1,3 +1,9 @@
 <mat-nav-list>
   <a *ngFor="let machine of machines" class="nav-item" mat-list-item routerLink="[ { outlets: { primary: ['lineperformance'],main: ['machine/{{ machine.id }}']}}]"><mat-icon [ngClass]="machine.state=='PR'?'green-icon':'red-icon'">stop_circle</mat-icon>  {{ machine.name}}</a>
+  <a [routerLink]="['/lineperformance', {
+    outlets: {
+      'main': ['welcome']
+    }
+  }
+  ]">Welcome</a>
 </mat-nav-list>
