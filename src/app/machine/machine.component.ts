@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnChanges } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
+import { Machine } from '../machine';
 
 @Component({
   selector: 'app-machine',
@@ -8,6 +9,7 @@ import { Location } from '@angular/common';
   styleUrls: ['./machine.component.css']
 })
 export class MachineComponent implements OnInit {
+  machine: Machine;
   id: number;
   name: string;
   state: string;
@@ -15,9 +17,9 @@ export class MachineComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private location: Location
-  ) { }
+  ){}
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.id = +this.route.snapshot.paramMap.get('id');
   }
 
