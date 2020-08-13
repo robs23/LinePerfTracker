@@ -8,17 +8,14 @@ import { Component, OnInit } from '@angular/core';
 export class LinePerformanceComponent {
   menuOpened = false;
   menuButton;
-  
 
-  toggleMenu(){
-    if(this.menuOpened){
+  toggleMenu(): void{
+    if (this.menuOpened){
       // Close menu
       this.menuOpened = false;
-      
     }else{
       // Open menu
       this.menuOpened = true;
     }
-    
   }
 }

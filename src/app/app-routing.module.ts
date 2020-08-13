@@ -6,10 +6,7 @@ import { LinePerformanceComponent } from './line-performance/line-performance.co
 
 const routes: Routes = [
   { path: 'machines', component: MachinesComponent},
-  { path: 'lineperformance', component: LinePerformanceComponent, children: [
-    { path: 'machine/:id', component: MachineComponent, outlet: 'main'}
-  ]},
-  { path: '', redirectTo: '/lineperformance', pathMatch: 'full'}
+  { path: 'machine/:id', component: MachineComponent}
 ];
 
 @NgModule({

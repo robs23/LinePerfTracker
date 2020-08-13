@@ -23,10 +23,10 @@ mat-sidenav-content{
     z-index: 100;
 }
 
-.menuToggle-expanded{
+.menuToggle-expanded-x{
     left: 210px !important;
 }
 
-.menuToggle-collapsed{
+.menuToggle-collapsed-x{
     left: 10px;
 }

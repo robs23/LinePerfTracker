@@ -2,6 +2,7 @@ import { Component, OnInit, OnChanges } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 import { Machine } from '../machine';
+import { MachineService } from '../services/machine.service';
 
 @Component({
   selector: 'app-machine',
@@ -10,17 +11,19 @@ import { Machine } from '../machine';
 })
 export class MachineComponent implements OnInit {
   machine: Machine;
-  id: number;
-  name: string;
-  state: string;
-
   constructor(
     private route: ActivatedRoute,
-    private location: Location
+    private location: Location,
+    private machineService: MachineService
   ){}
 
   ngOnInit(): void {
-    this.id = +this.route.snapshot.paramMap.get('id');
+    this.getMachine();
+  }
+
+  getMachine(): void{
+    const id = +this.route.snapshot.paramMap.get('id');
+    this.machineService.getMachine(id).subscribe(mach => this.machine = mach);
   }
 
 }
