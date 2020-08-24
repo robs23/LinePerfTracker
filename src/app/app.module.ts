@@ -11,6 +11,7 @@ import { FormsModule } from '@angular/forms';
 import { SpinnerComponent } from './spinner/spinner.component';
 import { MachineComponent } from './machine/machine.component';
 import { WelcomeComponent } from './welcome/welcome.component';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
    declarations: [
@@ -26,7 +27,8 @@ import { WelcomeComponent } from './welcome/welcome.component';
       AppRoutingModule,
       BrowserAnimationsModule,
       MaterialModule,
-      FormsModule
+      FormsModule,
+      HttpClientModule
    ],
    providers: [],
    bootstrap: [
