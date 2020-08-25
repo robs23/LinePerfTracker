@@ -10,7 +10,7 @@ import { MachineService } from '../services/machine.service';
   styleUrls: ['./machine.component.css']
 })
 export class MachineComponent implements OnInit {
-  machine: Machine;
+  public machine: Machine = null;
   constructor(
     private route: ActivatedRoute,
     private location: Location,

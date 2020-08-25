@@ -2,9 +2,9 @@ import { Machine } from './machine';
 import { Identifiers } from '@angular/compiler';
 
 export const MACHINES: Machine[] = [
-    {id: 1, name: 'Linia 01', state: 'PR'},
-    {id: 2, name: 'Linia 02', state: 'PR'},
-    {id: 3,  name: 'Linia 03', state: 'ST'},
-    {id: 14, name: 'Linia 14', state: 'PR'},
-    {id: 15, name: 'Linia 15', state: 'ST'}
-]
+    {Id: 1, Name: 'Linia 01', State: 'PR'},
+    {Id: 2, Name: 'Linia 02', State: 'PR'},
+    {Id: 3,  Name: 'Linia 03', State: 'ST'},
+    {Id: 14, Name: 'Linia 14', State: 'PR'},
+    {Id: 15, Name: 'Linia 15', State: 'ST'}
+];

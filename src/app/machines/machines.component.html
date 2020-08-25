@@ -1,8 +1,8 @@
 <mat-nav-list>
   <mat-list-item *ngFor="let machine of machines">
-    <a routerLink="/machine/{{machine.id}}">
-      <mat-icon [ngClass]="machine.state=='PR'?'green-icon':'red-icon'">stop_circle</mat-icon>  
-      {{machine.name}}
+    <a routerLink="/machine/{{machine.Id}}">
+      <mat-icon [ngClass]="machine.State=='PR'?'green-icon':'red-icon'">stop_circle</mat-icon>  
+      {{machine.Name}}
     </a>
   </mat-list-item>
 </mat-nav-list>

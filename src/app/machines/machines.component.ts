@@ -18,7 +18,7 @@ export class MachinesComponent implements OnInit {
   }
 
   getMachines(): void{
-    this.machineService.getMachines().subscribe(machines => this.machines = machines);
+    this.machineService.getMachines().subscribe(response => this.machines = response);
   }
 
 }
