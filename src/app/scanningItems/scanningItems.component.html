@@ -1,0 +1,20 @@
+<table mat-table [dataSource]="ScanningItems">
+  <!-- Date Column -->
+  <ng-container matColumnDef="Date">
+    <th mat-header-cell *matHeaderCellDef> Data </th>
+    <td mat-cell *matCellDef="let scanningItem">{{ scanningItem.Date }}</td>
+  </ng-container>
+
+    <!-- ScanningHour Column -->
+    <ng-container matColumnDef="ScanningHour">
+      <th mat-header-cell *matHeaderCellDef> Godzina </th>
+      <td mat-cell *matCellDef="let scanningItem">{{ scanningItem.ScanningHour }}</td>
+    </ng-container>
+
+    <!-- Quantity Column -->
+    <ng-container matColumnDef="Quantity">
+      <th mat-header-cell *matHeaderCellDef> Ilość [PC] </th>
+      <td mat-cell *matCellDef="let scanningItem">{{ scanningItem.Quantity }}</td>
+    </ng-container>
+
+</table>

@@ -12,15 +12,17 @@ import { SpinnerComponent } from './spinner/spinner.component';
 import { MachineComponent } from './machine/machine.component';
 import { WelcomeComponent } from './welcome/welcome.component';
 import { HttpClientModule } from '@angular/common/http';
+import { ScanningItemsComponent } from './scanningItems/scanningItems.component';
 
 @NgModule({
-   declarations: [
+   declarations: [	
       AppComponent,
       MachinesComponent,
       LinePerformanceComponent,
       SpinnerComponent,
       MachineComponent,
-      WelcomeComponent
+      WelcomeComponent,
+      ScanningItemsComponent
    ],
    imports: [
       BrowserModule,
