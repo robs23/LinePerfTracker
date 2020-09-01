@@ -49,3 +49,15 @@
   .mat-column-created {
     max-width: 124px;
   }
+
+  .positive {
+    color: green;
+}
+
+.negative {
+    color: red;
+}
+
+.uncompareable{
+  color: deepskyblue;
+}

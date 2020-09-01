@@ -4,7 +4,10 @@ export class ScanningItem {
     Date: Date;
     Quantity: number;
     QuantityKg: number;
+    QuantityFromBoxes: number;
+    FoilLossPercentage: number;
     Speed: number;
+    AssumedSpeed: number;
     EanType: number;
     ChangeOvers: number;
 }

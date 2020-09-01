@@ -11,7 +11,7 @@ import { ScanningItem } from '../scanningItem';
 export class ScanningItemsComponent implements OnInit {
   @Input() MachineId: number;
   ScanningItems: ScanningItem[];
-  displayedColumns: string[] = ['Date', 'ScanningHour', 'Quantity', 'QuantityKg', 'Speed', 'ChangeOvers'];
+  displayedColumns: string[] = ['Date', 'ScanningHour', 'Quantity', 'QuantityKg', 'FoilLossPercentage', 'Speed', 'ChangeOvers'];
   constructor(private scanningItemService: ScanningItemService) { }
 
   ngOnInit() {
