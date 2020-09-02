@@ -27,9 +27,12 @@ mat-sidenav-content{
 }
 
 #menuToggle{
-    top: 10px;
-    position: fixed;
-    z-index: 100;
+    position: relative;
+    margin-right: 15px;
+}
+
+.autoUpdateOff{
+    background-color: gray;
 }
 
 .menuToggle-expanded-x{

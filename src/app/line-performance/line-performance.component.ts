@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Settings } from '../settings';
 
 @Component({
   selector: 'app-line-performance',
@@ -8,6 +9,10 @@ import { Component, OnInit } from '@angular/core';
 export class LinePerformanceComponent {
   menuOpened = false;
   menuButton;
+
+  constructor(public settings: Settings) {
+
+  }
 
   toggleMenu(): void{
     if (this.menuOpened){

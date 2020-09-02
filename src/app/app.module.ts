@@ -13,6 +13,7 @@ import { MachineComponent } from './machine/machine.component';
 import { WelcomeComponent } from './welcome/welcome.component';
 import { HttpClientModule } from '@angular/common/http';
 import { ScanningItemsComponent } from './scanningItems/scanningItems.component';
+import { Settings } from './settings';
 
 @NgModule({
    declarations: [	
@@ -32,7 +33,7 @@ import { ScanningItemsComponent } from './scanningItems/scanningItems.component'
       FormsModule,
       HttpClientModule
    ],
-   providers: [],
+   providers: [ Settings ],
    bootstrap: [
       AppComponent
    ]
