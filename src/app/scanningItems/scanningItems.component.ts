@@ -24,7 +24,8 @@ export class ScanningItemsComponent implements OnInit, OnDestroy {
         if(value){
           //auto update on
           this.subscription = timer(0, 60000).pipe(
-            switchMap(() => this.scanningItemService.getScanningItems(this.MachineId))).subscribe(response => this.ScanningItems = response);
+            switchMap(() => this.scanningItemService.getScanningItems(this.MachineId)),
+            catchError(err => of([]))).subscribe(response => this.ScanningItems = response);
           
         }else{
           //auto update off
@@ -36,7 +37,8 @@ export class ScanningItemsComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.subscription = timer(0, 60000).pipe(
-      switchMap(() => this.scanningItemService.getScanningItems(this.MachineId))).subscribe(response => this.ScanningItems = response);
+      switchMap(() => this.scanningItemService.getScanningItems(this.MachineId)),
+      catchError(err => of([]))).subscribe(response => this.ScanningItems = response);
   }
 
   getScanningItems(): void{

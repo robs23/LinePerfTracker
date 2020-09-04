@@ -1,5 +1,5 @@
 
-<div class="perf-table-container">
+<div class="perf-table-container" *ngIf="ScanningItems.length>0">
   <table mat-table [dataSource]="ScanningItems" class="perf-table">
     <!-- Date Column -->
     <ng-container matColumnDef="Date">
@@ -52,3 +52,4 @@
       <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
   </table>
 </div>
+<div class="no-records" *ngIf="ScanningItems.length===0">Brak danych z ostatnich 24 godzin..</div>

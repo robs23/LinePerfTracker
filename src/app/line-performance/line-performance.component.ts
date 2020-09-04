@@ -25,7 +25,6 @@ export class LinePerformanceComponent {
         this.settings.AutoUpdate = true;
         this.userInteractionService.emitAutoUpdateClicked(true);
     }
-    
   }
 
   toggleMenu(): void{

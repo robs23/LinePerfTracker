@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import * as secrets from '../secrets';
 import { ScanningItem } from '../scanningItem';
+import { catchError } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -14,6 +15,6 @@ constructor(
 ) { }
 
 getScanningItems(MachineId: number): Observable<ScanningItem[]>{
-  return this.http.get<ScanningItem[]>(secrets.ApiAddress + 'GetRecentScans?MachineId=' + MachineId + '&EanType=2');
+  return this.http.get<ScanningItem[]>(secrets.ApiAddress + 'GetRecentScans?MachineId=' + MachineId + '&EanType=2').pipe(catchError(err => of([])))
 }
 }
