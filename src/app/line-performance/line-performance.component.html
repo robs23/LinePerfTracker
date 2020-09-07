@@ -1,10 +1,10 @@
 
 <mat-toolbar color="primary">
   <mat-toolbar-row>
-    <button [ngClass]="menuOpened?'menuToggle-expanded':'menuToggle-collapsed'" id="menuToggle" mat-mini-fab color="accent" (click)="menuOpened=!menuOpened">
+    <button matTooltip="Pokaż/Ukryj menu" [ngClass]="menuOpened?'menuToggle-expanded':'menuToggle-collapsed'" id="menuToggle" mat-mini-fab color="accent" (click)="menuOpened=!menuOpened">
       <mat-icon>menu</mat-icon>
     </button>
-    <button [ngClass]="settings.AutoUpdate?'autoUpdateOn':'autoUpdateOff'" id="autoUpdateToggle" mat-mini-fab color="accent" (click)="toggleAutoUpdate()">
+    <button matTooltip="Włącz/wyłącz autoodświeżanie danych" [ngClass]="settings.AutoUpdate?'autoUpdateOn':'autoUpdateOff'" id="autoUpdateToggle" mat-mini-fab color="accent" (click)="toggleAutoUpdate()">
       <mat-icon>loop</mat-icon>
     </button>
     <span class="title"><h1>Tablica wydajności</h1></span>

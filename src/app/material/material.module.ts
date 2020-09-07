@@ -8,6 +8,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import {MatTableModule} from '@angular/material/table';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
+import {MatTooltipModule} from '@angular/material/tooltip';
 
 const MaterialComponents = [
   MatButtonModule,
@@ -18,7 +19,8 @@ const MaterialComponents = [
   MatProgressSpinnerModule,
   MatToolbarModule,
   MatTableModule,
-  MatSlideToggleModule
+  MatSlideToggleModule,
+  MatTooltipModule
 ];
 
 @NgModule({
