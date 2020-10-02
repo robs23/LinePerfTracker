@@ -14,7 +14,7 @@ import { UserInteractionService } from '../services/userInteraction.service';
 export class ScanningItemsComponent implements OnInit, OnDestroy {
   @Input() MachineId: number;
   ScanningItems: ScanningItem[];
-  displayedColumns: string[] = ['Date', 'ScanningHour', 'Quantity', 'QuantityKg', 'FoilLossPercentage', 'Speed', 'ChangeOvers'];
+  displayedColumns: string[] = ['Date', 'ScanningHour', 'Quantity', 'QuantityKg', 'Zfin' , 'ConfirmedKg', 'FoilLossPercentage', 'Speed', 'SpeedDiff', 'ChangeOvers'];
   subscription: Subscription;
   autoUpdateSub: Subscription;
 

@@ -10,4 +10,7 @@ export class ScanningItem {
     AssumedSpeed: number;
     EanType: number;
     ChangeOvers: number;
+    SpeedDiff: number;
+    Zfin: number;
+    ConfirmedKg: number;
 }
