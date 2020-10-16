@@ -10,7 +10,8 @@
       <!-- ScanningHour Column -->
       <ng-container matColumnDef="ScanningHour">
         <th mat-header-cell *matHeaderCellDef> Godzina </th>
-        <td mat-cell *matCellDef="let row">{{ row.ScanningHour }}</td>
+        <td mat-cell *matCellDef="let row; let iRow = index" [attr.rowspan]="rowSpans[1][iRow].span"
+        [style.display]="rowSpans[1][iRow].span === 0 ? 'none'  : ''">{{ row.ScanningHour}}</td>
       </ng-container>
 
       <!-- Quantity Column -->
@@ -34,7 +35,8 @@
       <!-- ConfirmedKg Column -->
       <ng-container matColumnDef="ConfirmedKg">
         <th mat-header-cell *matHeaderCellDef> Potwierdzono w MES [KG] </th>
-        <td mat-cell *matCellDef="let row">{{ row.ConfirmedKg.toFixed(1) }}</td>
+        <td mat-cell *matCellDef="let row; let iRow = index" [attr.rowspan]="rowSpans[5][iRow].span"
+        [style.display]="rowSpans[5][iRow].span === 0 ? 'none'  : ''">{{ row.ConfirmedKg.toFixed(1) }}</td>
       </ng-container>
 
       <!-- FoilLossPercentage Column -->

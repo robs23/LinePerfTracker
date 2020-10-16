@@ -2,9 +2,10 @@ import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { Observable, Subject, of, timer, Subscription } from 'rxjs';
 import { ScanningItemService } from '../services/scanningItem.service';
 import { ScanningItem } from '../scanningItem';
-import { switchMap, takeUntil, catchError } from 'rxjs/operators';
+import { switchMap, takeUntil, catchError, finalize } from 'rxjs/operators';
 import { MachineComponent } from '../machine/machine.component';
 import { UserInteractionService } from '../services/userInteraction.service';
+import { Span, RowSpanComputer } from '../row-span-computer';
 
 @Component({
   selector: 'app-scanningItems',
@@ -14,6 +15,8 @@ import { UserInteractionService } from '../services/userInteraction.service';
 export class ScanningItemsComponent implements OnInit, OnDestroy {
   @Input() MachineId: number;
   ScanningItems: ScanningItem[];
+  rowSpans: Array<Span[]>;
+  private rowSpanComputer = new RowSpanComputer();
   displayedColumns: string[] = ['Date', 'ScanningHour', 'Quantity', 'QuantityKg', 'Zfin' , 'ConfirmedKg', 'FoilLossPercentage', 'Speed', 'SpeedDiff', 'ChangeOvers'];
   subscription: Subscription;
   autoUpdateSub: Subscription;
@@ -38,7 +41,10 @@ export class ScanningItemsComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.subscription = timer(0, 60000).pipe(
       switchMap(() => this.scanningItemService.getScanningItems(this.MachineId)),
-      catchError(err => of([]))).subscribe(response => this.ScanningItems = response);
+      catchError(err => of([]))).subscribe(response => {
+        this.ScanningItems = response;
+        this.computeRowSpans();}
+        );
   }
 
   getScanningItems(): void{
@@ -47,6 +53,10 @@ export class ScanningItemsComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void{
     this.subscription.unsubscribe();
+  }
+
+  private computeRowSpans(): void{
+    this.rowSpans = this.rowSpanComputer.compute(this.ScanningItems, this.displayedColumns);
   }
 
   }
