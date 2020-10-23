@@ -17,7 +17,10 @@ export class ScanningItemsComponent implements OnInit, OnDestroy {
   ScanningItems: ScanningItem[];
   rowSpans: Array<Span[]>;
   private rowSpanComputer = new RowSpanComputer();
-  displayedColumns: string[] = ['Date', 'ScanningHour', 'Quantity', 'QuantityKg', 'Zfin' , 'ConfirmedKg', 'FoilLossPercentage', 'Speed', 'SpeedDiff', 'ChangeOvers'];
+  displayedColumns: string[] = ['Date', 'ScanningHour', 'Zfin', 'ConfirmedKg', 'Contaminated', 'Quantity', 'QuantityKg' , 'FoilLossPercentage', 'Speed', 'SpeedDiff', 'ChangeOvers'];
+  columnNames: string[] = ['Zfin', 'ConfirmedKg', 'Contaminated', 'Date', 'ScanningHour', 'Quantity', 'QuantityKg' , 'FoilLossPercentage', 'Speed', 'SpeedDiff', 'ChangeOvers'];
+  lastColumnName: string;
+  allButLastColumnNames: string[];
   subscription: Subscription;
   autoUpdateSub: Subscription;
 
@@ -56,7 +59,9 @@ export class ScanningItemsComponent implements OnInit, OnDestroy {
   }
 
   private computeRowSpans(): void{
-    this.rowSpans = this.rowSpanComputer.compute(this.ScanningItems, this.displayedColumns);
+    this.lastColumnName = this.displayedColumns[this.displayedColumns.length - 1];
+    this.allButLastColumnNames = this.displayedColumns.slice(0, -1);
+    this.rowSpans = this.rowSpanComputer.compute(this.ScanningItems, this.columnNames);
   }
 
   }

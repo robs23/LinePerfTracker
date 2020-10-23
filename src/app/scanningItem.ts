@@ -1,3 +1,5 @@
+import { stringify } from '@angular/compiler/src/util';
+
 export class ScanningItem {
     Id: number;
     ScanningHour: number;
@@ -13,4 +15,5 @@ export class ScanningItem {
     SpeedDiff: number;
     Zfin: number;
     ConfirmedKg: number;
+    Contaminated: number;
 }

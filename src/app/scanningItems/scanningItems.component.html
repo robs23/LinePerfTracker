@@ -1,6 +1,7 @@
 
 <div class="perf-table-container" *ngIf="ScanningItems.length>0">
   <table mat-table [dataSource]="ScanningItems" class="perf-table">
+
     <!-- Date Column -->
     <ng-container matColumnDef="Date">
       <th mat-header-cell *matHeaderCellDef> Data </th>
@@ -10,9 +11,29 @@
       <!-- ScanningHour Column -->
       <ng-container matColumnDef="ScanningHour">
         <th mat-header-cell *matHeaderCellDef> Godzina </th>
-        <td mat-cell *matCellDef="let row; let iRow = index" [attr.rowspan]="rowSpans[1][iRow].span"
-        [style.display]="rowSpans[1][iRow].span === 0 ? 'none'  : ''">{{ row.ScanningHour}}</td>
+        <td mat-cell *matCellDef="let row; let iRow = index">{{ row.ScanningHour}}</td>
       </ng-container>
+
+      <!-- Zfin Column -->
+    <ng-container matColumnDef="Zfin">
+      <th mat-header-cell *matHeaderCellDef> Produkt </th>
+      <td mat-cell *matCellDef="let row; let iRow = index" [attr.rowspan]="rowSpans[0][iRow].span"
+      [style.display]="rowSpans[0][iRow].span === 0 ? 'none'  : ''">{{ row.Zfin }}</td>
+    </ng-container>
+
+    <!-- ConfirmedKg Column -->
+    <ng-container matColumnDef="ConfirmedKg">
+      <th mat-header-cell *matHeaderCellDef> Potwierdzono w MES [KG] </th>
+      <td mat-cell *matCellDef="let row; let iRow = index" [attr.rowspan]="rowSpans[1][iRow].span"
+      [style.display]="rowSpans[1][iRow].span === 0 ? 'none'  : ''">{{ row.ConfirmedKg.toFixed(1) }}</td>
+    </ng-container>
+
+    <!-- Contaminated Column -->
+    <ng-container matColumnDef="Contaminated">
+      <th mat-header-cell *matHeaderCellDef> Odrzut XRay </th>
+      <td mat-cell *matCellDef="let row; let iRow = index" [attr.rowspan]="rowSpans[2][iRow].span"
+      [style.display]="rowSpans[2][iRow].span === 0 ? 'none'  : ''">{{ row.Contaminated}}</td>
+    </ng-container>
 
       <!-- Quantity Column -->
       <ng-container matColumnDef="Quantity">
@@ -24,19 +45,6 @@
       <ng-container matColumnDef="QuantityKg">
         <th mat-header-cell *matHeaderCellDef> Ilość [KG] </th>
         <td mat-cell *matCellDef="let row">{{ row.QuantityKg.toFixed(1) }}</td>
-      </ng-container>
-
-      <!-- Zfin Column -->
-      <ng-container matColumnDef="Zfin">
-        <th mat-header-cell *matHeaderCellDef> Produkt </th>
-        <td mat-cell *matCellDef="let row">{{ row.Zfin }}</td>
-      </ng-container>
-
-      <!-- ConfirmedKg Column -->
-      <ng-container matColumnDef="ConfirmedKg">
-        <th mat-header-cell *matHeaderCellDef> Potwierdzono w MES [KG] </th>
-        <td mat-cell *matCellDef="let row; let iRow = index" [attr.rowspan]="rowSpans[5][iRow].span"
-        [style.display]="rowSpans[5][iRow].span === 0 ? 'none'  : ''">{{ row.ConfirmedKg.toFixed(1) }}</td>
       </ng-container>
 
       <!-- FoilLossPercentage Column -->
