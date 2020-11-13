@@ -17,8 +17,8 @@ export class ScanningItemsComponent implements OnInit, OnDestroy {
   ScanningItems: ScanningItem[];
   rowSpans: Array<Span[]>;
   private rowSpanComputer = new RowSpanComputer();
-  displayedColumns: string[] = ['Date', 'ScanningHour', 'Zfin', 'ConfirmedKg', 'Contaminated', 'Quantity', 'QuantityKg' , 'FoilLossPercentage', 'Speed', 'SpeedDiff', 'ChangeOvers'];
-  columnNames: string[] = ['Zfin', 'ConfirmedKg', 'Contaminated', 'Date', 'ScanningHour', 'Quantity', 'QuantityKg' , 'FoilLossPercentage', 'Speed', 'SpeedDiff', 'ChangeOvers'];
+  displayedColumns: string[] = ['Date', 'ScanningHour', 'Zfin', 'ConfirmedKg', 'Contaminated', 'Quantity', 'QuantityKg' , 'FoilLossPercentage', 'Speed', 'GE', 'ChangeOvers'];
+  columnNames: string[] = ['Zfin', 'ConfirmedKg', 'Contaminated', 'Date', 'ScanningHour', 'Quantity', 'QuantityKg' , 'FoilLossPercentage', 'Speed', 'GE', 'ChangeOvers'];
   lastColumnName: string;
   allButLastColumnNames: string[];
   subscription: Subscription;

@@ -6,6 +6,7 @@ export class ScanningItem {
     Date: Date;
     Quantity: number;
     QuantityKg: number;
+    QuantityFromFoil: number;
     QuantityFromBoxes: number;
     FoilLossPercentage: number;
     Speed: number;
@@ -16,4 +17,7 @@ export class ScanningItem {
     Zfin: number;
     ConfirmedKg: number;
     Contaminated: number;
+    GE: number;
+    NetWeight: number;
+    BoxCount: number;
 }

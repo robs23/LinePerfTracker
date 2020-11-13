@@ -65,14 +65,14 @@
       </ng-container>
 
       <!-- SpeedDiff Column -->
-      <ng-container matColumnDef="SpeedDiff">
-        <th mat-header-cell *matHeaderCellDef> Różnica prędkości [szt/min] </th>
+      <ng-container matColumnDef="GE">
+        <th mat-header-cell *matHeaderCellDef> GE </th>
         <td mat-cell *matCellDef="let row"
         [ngClass]="{
           'uncompareable' : row.ChangeOvers > 0,
           'positive' : row.Speed > row.AssumedSpeed,
           'negative' : row.Speed < row.AssumedSpeed
-       }">{{ row.SpeedDiff }}</td>
+       }">{{ row.GE.toFixed(1) }}</td>
       </ng-container>
 
       <!-- ChangeOvers Column -->
