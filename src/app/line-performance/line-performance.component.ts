@@ -27,6 +27,16 @@ export class LinePerformanceComponent {
     }
   }
 
+  toggleTabSwitch(): void{
+    if(this.settings.TabSwitch){
+      this.settings.TabSwitch = false;
+      this.userInteractionService.emitTabSwitchClicked(false);
+    }else{
+        this.settings.TabSwitch = true;
+        this.userInteractionService.emitTabSwitchClicked(true);
+    }
+  }
+
   toggleMenu(): void{
     if (this.menuOpened){
       // Close menu

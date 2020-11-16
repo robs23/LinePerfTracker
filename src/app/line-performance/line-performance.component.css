@@ -31,7 +31,16 @@ mat-sidenav-content{
     margin-right: 15px;
 }
 
+#autoUpdateToggle{
+    position: relative;
+    margin-right: 15px;
+}
+
 .autoUpdateOff{
+    background-color: gray;
+}
+
+.tabSwitchOff{
     background-color: gray;
 }
 

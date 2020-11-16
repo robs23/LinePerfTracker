@@ -1,11 +1,12 @@
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
-import { Observable, Subject, of, timer, Subscription } from 'rxjs';
+import { Observable, Subject, of, timer, Subscription, interval } from 'rxjs';
 import { ScanningItemService } from '../services/scanningItem.service';
 import { ScanningItem } from '../scanningItem';
 import { switchMap, takeUntil, catchError, finalize } from 'rxjs/operators';
 import { MachineComponent } from '../machine/machine.component';
 import { UserInteractionService } from '../services/userInteraction.service';
 import { Span, RowSpanComputer } from '../row-span-computer';
+import { ValueConverter } from '@angular/compiler/src/render3/view/template';
 
 @Component({
   selector: 'app-scanningItems',
@@ -23,6 +24,11 @@ export class ScanningItemsComponent implements OnInit, OnDestroy {
   allButLastColumnNames: string[];
   subscription: Subscription;
   autoUpdateSub: Subscription;
+  tabSwitchClickedSub: Subscription;
+  tabSwitchSub: Subscription;
+  selectedTab: number = 0;
+  tabsToSwitch: number[] = [0, 1, 2];
+  tabSwitchSource = interval(10000); //emit value in sequence every 10 second
 
   constructor(private scanningItemService: ScanningItemService, private userInteractionService: UserInteractionService) { 
     this.autoUpdateSub = userInteractionService.autoUpdateClicked$.subscribe(
@@ -39,6 +45,17 @@ export class ScanningItemsComponent implements OnInit, OnDestroy {
         }
       }
     );
+    this.tabSwitchClickedSub = userInteractionService.tabSwitchClicked$.subscribe(
+      value => {
+        if(value){
+          //tab switch on
+          this.tabSwitchSub = this.tabSwitchSource.subscribe(() => this.nextTab());
+        }else{
+          //tab switch off
+          this.tabSwitchSub.unsubscribe();
+        }
+      }
+    );
   }
 
   ngOnInit() {
@@ -48,6 +65,7 @@ export class ScanningItemsComponent implements OnInit, OnDestroy {
         this.ScanningItems = response;
         this.computeRowSpans();}
         );
+    this.tabSwitchSub = this.tabSwitchSource.subscribe(() => this.nextTab());
   }
 
   getScanningItems(): void{
@@ -56,12 +74,22 @@ export class ScanningItemsComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void{
     this.subscription.unsubscribe();
+    this.tabSwitchSub.unsubscribe();
   }
 
   private computeRowSpans(): void{
     this.lastColumnName = this.displayedColumns[this.displayedColumns.length - 1];
     this.allButLastColumnNames = this.displayedColumns.slice(0, -1);
     this.rowSpans = this.rowSpanComputer.compute(this.ScanningItems, this.columnNames);
+  }
+
+  private nextTab(): void{
+    if(this.selectedTab + 1 < this.tabsToSwitch.length){
+      this.selectedTab++;
+    }else{
+      //back to start
+      this.selectedTab = this.tabsToSwitch[0];
+    }
   }
 
   }

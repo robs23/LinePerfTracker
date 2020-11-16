@@ -1,7 +1,10 @@
 <div *ngIf="machine">
     <span class="title"><h1>{{ machine.Name }} </h1></span>
     <div>
-        <app-scanningItems [MachineId]=machine.Id></app-scanningItems>
+        <div>
+            <app-scanningItems [MachineId]=machine.Id></app-scanningItems>
+        </div>
     </div>
+    
 
 </div>
