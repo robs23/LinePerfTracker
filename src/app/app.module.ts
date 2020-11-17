@@ -14,16 +14,18 @@ import { WelcomeComponent } from './welcome/welcome.component';
 import { HttpClientModule } from '@angular/common/http';
 import { ScanningItemsComponent } from './scanningItems/scanningItems.component';
 import { Settings } from './settings';
+import { PerformanceChartComponent } from './performance-chart/performance-chart.component';
 
 @NgModule({
-   declarations: [	
+   declarations: [			
       AppComponent,
       MachinesComponent,
       LinePerformanceComponent,
       SpinnerComponent,
       MachineComponent,
       WelcomeComponent,
-      ScanningItemsComponent
+      ScanningItemsComponent,
+      PerformanceChartComponent
    ],
    imports: [
       BrowserModule,
