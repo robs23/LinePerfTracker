@@ -14,10 +14,6 @@ export class RowSpanComputer {
          for (let iCol = 0; iCol < columns.length; iCol++) {
             const column = columns[iCol];
             const spanColumnContext = spanColumnContexts[iCol];
-            if(iCol==2 && row["Id"] >1){
-               console.log("zfin = " + row["Zfin"] + ", columnContext.span = " + spanColumnContext.span.span);
-               console.log("columnContext.row = " + JSON.stringify(spanColumnContext.spannedRow));
-            }
             if (spanColumnContext && spanColumnContext.spannedRow[column] == row[column]) {
                ++spanColumnContext.span.span;
                spans[iCol].push({ span: 0 });

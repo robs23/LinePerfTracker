@@ -93,7 +93,7 @@
       <mat-tab label="Zmianowo"></mat-tab>
       <mat-tab label="Wykres">
         <ng-template matTabContent>
-          <app-performance-chart></app-performance-chart>
+          <app-performance-chart [scanningItems]="ScanningItems"></app-performance-chart>
         </ng-template>
       </mat-tab>
   </mat-tab-group>
