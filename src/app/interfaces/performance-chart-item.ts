@@ -4,4 +4,6 @@ export interface PerformanceChartItem {
     foilLossPercentage: number;
     changeovers: number;
     quantityKg: number;
+    backgroundColor: string;
+    borderColor: string;
 }

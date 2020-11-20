@@ -18,6 +18,8 @@ export class PerformanceChartComponent implements OnInit {
   ges: number[];
   foil: number[];
   quantities: number[];
+  backgroundColors: string[];
+  borderColors: string[];
 
   ngOnInit() {
     this.prepareData();
@@ -30,6 +32,8 @@ export class PerformanceChartComponent implements OnInit {
     this.ges = this.items.map(i=> i.ge);
     this.foil = this.items.map(i=> i.foilLossPercentage);
     this.quantities = this.items.map(i=> i.quantityKg);
+    this.backgroundColors = this.items.map(i => i.backgroundColor);
+    this.borderColors = this.items.map(i => i.borderColor);
   }
 
   
@@ -45,36 +49,32 @@ export class PerformanceChartComponent implements OnInit {
             data: this.ges,
             yAxisID: 'A',
             borderColor: [
-              'rgba(255, 99, 132, 1)'
+              'rgba(10, 10, 10, 1)'
             ],
             backgroundColor: [
               'rgba(0, 0, 0, 0)'
             ],
-            borderWidth: 1,
+            borderWidth: 3,
           },
           {
             label: 'Strata folii [%]',
             data: this.foil,
             yAxisID: 'A',
             borderColor: [
-              'rgba(54, 162, 235, 1)',
+              'rgba(161, 0, 255,1)',
             ],
             backgroundColor: [
               'rgba(0, 0, 0, 0)'
             ],
-            borderWidth: 1,
+            borderWidth: 2,
           }
           ,
           {
             label: 'Ilość [KG]',
             data: this.quantities,
             yAxisID: 'B',
-            backgroundColor: [
-              'rgba(255, 206, 86, 0.2)'
-            ],
-            borderColor: [
-              'rgba(255, 206, 86, 1)'
-            ],
+            backgroundColor: this.backgroundColors,
+            borderColor: this.borderColors,
             borderWidth: 1,
             type: 'bar'
           }
