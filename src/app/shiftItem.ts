@@ -14,4 +14,5 @@ export class ShiftItem {
     ConfirmedKg: number;
     Contaminated: number;
     GE: number;
+    WorkingHours: number;
 }

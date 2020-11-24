@@ -3,6 +3,8 @@ import { PerformanceChartItem } from './interfaces/performance-chart-item';
 import { ShiftItem } from './shiftItem';
 import { DataRowOutlet } from '@angular/cdk/table';
 import { retryWhen } from 'rxjs/operators';
+import { CumulativeItem } from './cumulativeItem';
+import { ScanningItemService } from './services/scanningItem.service';
 
 export class ScanningItemsTransformer {
 
@@ -52,25 +54,21 @@ export class ScanningItemsTransformer {
         let prevContaminated: number = -1;
         let prevConfirmed: number = -1;
         let i = 0;
+
         for(const row of nScanningItems){
             if(this.isSameShift(prevDate, prevHour, row.Date, row.ScanningHour)){
                 shiftItems[i-1].ScanningHourLast = row.ScanningHour;
                 shiftItems[i-1].Quantity += row.Quantity;
                 shiftItems[i-1].QuantityKg += row.QuantityKg;
-                shiftItems[i-1].FoilLossPercentage = (shiftItems[i-1].FoilLossPercentage + row.FoilLossPercentage)/2;
-                shiftItems[i-1].Speed = (shiftItems[i-1].Speed + row.Speed)/2;
-                shiftItems[i-1].AssumedSpeed = (shiftItems[i-1].AssumedSpeed + row.AssumedSpeed)/2;
+                shiftItems[i-1].FoilLossPercentage += row.FoilLossPercentage;
+                shiftItems[i-1].Speed += row.Speed;
+                shiftItems[i-1].AssumedSpeed += row.AssumedSpeed;
                 if(row.Zfin != prevZfin){
                     shiftItems[i-1].Zfins += ", " + row.Zfin;
                     shiftItems[i-1].ChangeOvers += row.ChangeOvers;
                 }
-                if(row.ConfirmedKg != prevConfirmed && row.Zfin == prevZfin){
-                    shiftItems[i-1].ConfirmedKg += row.ConfirmedKg;
-                }else if(row.ConfirmedKg == prevConfirmed && row.Zfin == prevZfin){
-                    //do nothing
-                }else{
-                    shiftItems[i-1].ConfirmedKg += row.ConfirmedKg;
-                }
+                shiftItems[i-1].ConfirmedKg += (row.ConfirmedKg/nScanningItems.filter(x=> x.Zfin == row.Zfin && x.ConfirmedKg == row.ConfirmedKg).length);
+                shiftItems[i-1].Contaminated += (row.Contaminated/nScanningItems.filter(x=> x.Zfin == row.Zfin && x.Contaminated == row.Contaminated).length);
                 if(row.Contaminated != prevContaminated && row.Zfin == prevZfin){
                     shiftItems[i-1].Contaminated += row.Contaminated;
                 }else if(row.Contaminated == prevContaminated && row.Zfin == prevZfin){
@@ -78,7 +76,10 @@ export class ScanningItemsTransformer {
                 }else{
                     shiftItems[i-1].Contaminated += row.Contaminated;
                 }
-                shiftItems[i-1].GE = (shiftItems[i-1].GE + row.GE)/2;
+                shiftItems[i-1].GE += row.GE;
+                if(prevHour != row.ScanningHour){
+                    shiftItems[i-1].WorkingHours++;
+                }
             }else{
                 let name: string;
                 if(row.ScanningHour >= 6 && row.ScanningHour <14){
@@ -99,11 +100,13 @@ export class ScanningItemsTransformer {
                                             FoilLossPercentage: row.FoilLossPercentage,
                                             Speed: row.Speed, 
                                             AssumedSpeed: row.AssumedSpeed, 
-                                            ChangeOvers: row.ChangeOvers, 
+                                            ChangeOvers: 0, 
                                             Zfins: row.Zfin.toString(), 
-                                            ConfirmedKg: row.ConfirmedKg, 
-                                            Contaminated: row.Contaminated, 
-                                            GE: row.GE};
+                                            ConfirmedKg: (row.ConfirmedKg/nScanningItems.filter(x=> x.Zfin == row.Zfin && x.ConfirmedKg == row.ConfirmedKg).length),
+                                            Contaminated: (row.Contaminated/nScanningItems.filter(x=> x.Zfin == row.Zfin && x.Contaminated == row.Contaminated).length),
+                                            GE: row.GE,
+                                            WorkingHours: 1
+                                        };
                 shiftItems.push(newItem);
                 i++;
             }
@@ -112,6 +115,12 @@ export class ScanningItemsTransformer {
             prevConfirmed = row.ConfirmedKg;
             prevZfin = row.Zfin;
             prevContaminated = row.Contaminated;
+        }
+        for(const item of shiftItems){
+            item.FoilLossPercentage = item.FoilLossPercentage / item.WorkingHours;
+            item.GE = item.GE / item.WorkingHours;
+            item.Speed = item.Speed / item.WorkingHours;
+            item.AssumedSpeed = item.AssumedSpeed / item.WorkingHours;
         }
         return shiftItems;
     }
@@ -137,7 +146,7 @@ export class ScanningItemsTransformer {
             let c = new Date(currDate);
             let dur = c.valueOf() - p.valueOf();
             if(dur <= 86400000){
-                //it's equivalent of 1 day
+                //it's milisecond equivalent of 1 day
                 if((prevHour == 22 || prevHour == 23) && (currHour >= 0 && currHour < 6)){
                     res = true;
                 }

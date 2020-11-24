@@ -1,0 +1,135 @@
+<div>
+  <div class="shift-table-container" *ngIf="items.length > 0">
+    <table mat-table [dataSource]="items" class="shift-table">
+      <!-- Date Column -->
+      <ng-container matColumnDef="Date">
+        <th mat-header-cell *matHeaderCellDef>Data</th>
+        <td mat-cell *matCellDef="let row">
+          {{ row.Date | date: "yyyy-MM-dd" }}
+        </td>
+      </ng-container>
+
+      <!-- Name Column -->
+      <ng-container matColumnDef="Name">
+        <th mat-header-cell *matHeaderCellDef>Zmiana</th>
+        <td mat-cell *matCellDef="let row">
+          {{ row.Name }}
+        </td>
+      </ng-container>
+
+      <!-- ScanningHourFirst Column -->
+      <ng-container matColumnDef="ScanningHourFirst">
+        <th mat-header-cell *matHeaderCellDef>Start</th>
+        <td mat-cell *matCellDef="let row; let iRow = index">
+          {{ row.ScanningHourFirst }}
+        </td>
+      </ng-container>
+
+      <!-- ScanningHourLast Column -->
+      <ng-container matColumnDef="ScanningHourLast">
+        <th mat-header-cell *matHeaderCellDef>Koniec</th>
+        <td mat-cell *matCellDef="let row; let iRow = index">
+          {{ row.ScanningHourLast }}
+        </td>
+      </ng-container>
+
+      <!-- WorkingHours Column -->
+      <ng-container matColumnDef="WorkingHours">
+        <th mat-header-cell *matHeaderCellDef>Godzin pracy</th>
+        <td mat-cell *matCellDef="let row; let iRow = index">
+          {{ row.WorkingHours }}
+        </td>
+      </ng-container>
+
+      <!-- ConfirmedKg Column -->
+      <ng-container matColumnDef="ConfirmedKg">
+        <th mat-header-cell *matHeaderCellDef> MES [KG]</th>
+        <td mat-cell *matCellDef="let row; let iRow = index">
+          {{ row.ConfirmedKg.toFixed(1) }}
+        </td>
+      </ng-container>
+
+      <!-- Quantity Column -->
+      <ng-container matColumnDef="Quantity">
+        <th mat-header-cell *matHeaderCellDef>Ilość [PC]</th>
+        <td mat-cell *matCellDef="let row">{{ row.Quantity }}</td>
+      </ng-container>
+
+      <!-- QuantityKg Column -->
+      <ng-container matColumnDef="QuantityKg">
+        <th mat-header-cell *matHeaderCellDef>Ilość [KG]</th>
+        <td mat-cell *matCellDef="let row">{{ row.QuantityKg.toFixed(1) }}</td>
+      </ng-container>
+
+      <!-- FoilLossPercentage Column -->
+      <ng-container matColumnDef="FoilLossPercentage">
+        <th mat-header-cell *matHeaderCellDef>Strata folii [%]</th>
+        <td mat-cell *matCellDef="let row">
+          {{ row.FoilLossPercentage.toFixed(1) }}
+        </td>
+      </ng-container>
+
+      <!-- Contaminated Column -->
+      <ng-container matColumnDef="Contaminated">
+        <th mat-header-cell *matHeaderCellDef>Odrzut XRay</th>
+        <td mat-cell *matCellDef="let row; let iRow = index">
+          {{ row.Contaminated.toFixed(1) }}
+        </td>
+      </ng-container>
+
+      <!-- Speed Column -->
+      <ng-container matColumnDef="Speed">
+        <th mat-header-cell *matHeaderCellDef>Prędkość [szt/min]</th>
+        <td
+          mat-cell
+          *matCellDef="let row"
+          [ngClass]="{
+            uncompareable: row.ChangeOvers > 0,
+            positive: row.Speed > row.AssumedSpeed,
+            negative: row.Speed < row.AssumedSpeed
+          }"
+        >
+          {{ row.Speed.toFixed(1) }}
+        </td>
+      </ng-container>
+
+      <!-- GE Column -->
+      <ng-container matColumnDef="GE">
+        <th mat-header-cell *matHeaderCellDef>GE</th>
+        <td
+          mat-cell
+          *matCellDef="let row"
+          [ngClass]="{
+            uncompareable: row.ChangeOvers > 0,
+            positive: row.Speed > row.AssumedSpeed,
+            negative: row.Speed < row.AssumedSpeed
+          }"
+        >
+          {{ row.GE.toFixed(1) }}
+        </td>
+      </ng-container>
+
+      <!-- ChangeOvers Column -->
+      <ng-container matColumnDef="ChangeOvers">
+        <th mat-header-cell *matHeaderCellDef>Przezbrojenia</th>
+        <td mat-cell *matCellDef="let row">{{ row.ChangeOvers }}</td>
+      </ng-container>
+
+      <!-- Zfins Column -->
+      <ng-container matColumnDef="Zfins">
+        <th mat-header-cell *matHeaderCellDef>Produkty</th>
+        <td mat-cell *matCellDef="let row">{{ row.Zfins }}</td>
+      </ng-container>
+
+      <tr
+        mat-header-row
+        *matHeaderRowDef="displayedColumns"
+        class="header-row"
+      ></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
+  </div>
+  <div class="no-records" *ngIf="items.length === 0">
+    Brak danych z ostatnich 24 godzin..
+  </div>
+</div>

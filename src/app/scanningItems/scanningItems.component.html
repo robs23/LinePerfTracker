@@ -90,7 +90,11 @@
         </div>
         <div class="no-records" *ngIf="ScanningItems.length===0">Brak danych z ostatnich 24 godzin..</div>
       </mat-tab>
-      <mat-tab label="Zmianowo"></mat-tab>
+      <mat-tab label="Zmianowo">
+        <ng-template matTabContent>
+          <app-shift-view [scanningItems]="ScanningItems"></app-shift-view>
+        </ng-template>
+      </mat-tab>
       <mat-tab label="Wykres">
         <ng-template matTabContent>
           <app-performance-chart [scanningItems]="ScanningItems"></app-performance-chart>
