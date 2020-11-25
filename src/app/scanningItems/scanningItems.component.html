@@ -3,7 +3,7 @@
   <mat-tab-group [selectedIndex]="tabsToSwitch[selectedTab]">
       <mat-tab label="Godzinowo">
         <div class="perf-table-container" *ngIf="ScanningItems.length>0">
-          <table mat-table [dataSource]="ScanningItems" class="perf-table">
+          <table mat-table [dataSource]="ScanningItems" class="perf-table" id="perf-table">
         
             <!-- Date Column -->
             <ng-container matColumnDef="Date">

@@ -7,6 +7,7 @@ import { MachineComponent } from '../machine/machine.component';
 import { UserInteractionService } from '../services/userInteraction.service';
 import { Span, RowSpanComputer } from '../row-span-computer';
 import { ValueConverter } from '@angular/compiler/src/render3/view/template';
+import * as XLSX from 'xlsx'; 
 
 @Component({
   selector: 'app-scanningItems',
@@ -29,6 +30,7 @@ export class ScanningItemsComponent implements OnInit, OnDestroy {
   selectedTab: number = 0;
   tabsToSwitch: number[] = [0, 1, 2];
   tabSwitchSource = interval(10000); //emit value in sequence every 10 second
+  exportButtonClickedSub: Subscription;
 
   constructor(private scanningItemService: ScanningItemService, private userInteractionService: UserInteractionService) { 
     this.autoUpdateSub = userInteractionService.autoUpdateClicked$.subscribe(
@@ -56,6 +58,11 @@ export class ScanningItemsComponent implements OnInit, OnDestroy {
         }
       }
     );
+    this.exportButtonClickedSub = userInteractionService.exportClicked$.subscribe(
+      value => {
+        this.exportToExcel();
+      }
+    )
   }
 
   ngOnInit() {
@@ -75,6 +82,7 @@ export class ScanningItemsComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void{
     this.subscription.unsubscribe();
     this.tabSwitchSub.unsubscribe();
+    this.exportButtonClickedSub.unsubscribe();
   }
 
   private computeRowSpans(): void{
@@ -90,6 +98,25 @@ export class ScanningItemsComponent implements OnInit, OnDestroy {
       //back to start
       this.selectedTab = this.tabsToSwitch[0];
     }
+  }
+
+  exportToExcel(): void{
+    /* table id is passed over here */   
+    let tableId: string = "";
+    if(this.selectedTab==0){
+      tableId = "perf-table";
+    }else{
+      tableId = "shift-table";
+    }
+    let element = document.getElementById(tableId); 
+    const ws: XLSX.WorkSheet =XLSX.utils.table_to_sheet(element);
+
+    /* generate workbook and add the worksheet */
+    const wb: XLSX.WorkBook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+
+    /* save to file */
+    XLSX.writeFile(wb, `linetracker_${Date().toString()}.xlsx`);
   }
 
   }

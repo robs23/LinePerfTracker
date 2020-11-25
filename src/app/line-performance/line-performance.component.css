@@ -26,12 +26,7 @@ mat-sidenav-content{
     height: 100%;
 }
 
-#menuToggle{
-    position: relative;
-    margin-right: 15px;
-}
-
-#autoUpdateToggle{
+.btn{
     position: relative;
     margin-right: 15px;
 }

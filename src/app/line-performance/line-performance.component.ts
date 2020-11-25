@@ -37,6 +37,10 @@ export class LinePerformanceComponent {
     }
   }
 
+  exportToExcel(): void{
+    this.userInteractionService.emitExportClicked(true);
+  }
+
   toggleMenu(): void{
     if (this.menuOpened){
       // Close menu

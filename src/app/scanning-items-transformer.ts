@@ -3,7 +3,6 @@ import { PerformanceChartItem } from './interfaces/performance-chart-item';
 import { ShiftItem } from './shiftItem';
 import { DataRowOutlet } from '@angular/cdk/table';
 import { retryWhen } from 'rxjs/operators';
-import { CumulativeItem } from './cumulativeItem';
 import { ScanningItemService } from './services/scanningItem.service';
 
 export class ScanningItemsTransformer {

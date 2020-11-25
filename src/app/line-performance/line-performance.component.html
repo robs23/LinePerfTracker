@@ -1,14 +1,17 @@
 
 <mat-toolbar color="primary">
   <mat-toolbar-row>
-    <button matTooltip="Pokaż/Ukryj menu" [ngClass]="menuOpened?'menuToggle-expanded':'menuToggle-collapsed'" id="menuToggle" mat-mini-fab color="accent" (click)="menuOpened=!menuOpened">
+    <button matTooltip="Pokaż/Ukryj menu" class="btn" [ngClass]="menuOpened?'menuToggle-expanded':'menuToggle-collapsed'" id="menuToggle" mat-mini-fab color="accent" (click)="menuOpened=!menuOpened">
       <mat-icon>menu</mat-icon>
     </button>
-    <button matTooltip="Włącz/wyłącz autoodświeżanie danych" [ngClass]="settings.AutoUpdate?'autoUpdateOn':'autoUpdateOff'" id="autoUpdateToggle" mat-mini-fab color="accent" (click)="toggleAutoUpdate()">
+    <button matTooltip="Włącz/wyłącz autoodświeżanie danych" class="btn" [ngClass]="settings.AutoUpdate?'autoUpdateOn':'autoUpdateOff'" id="autoUpdateToggle" mat-mini-fab color="accent" (click)="toggleAutoUpdate()">
       <mat-icon>loop</mat-icon>
     </button>
-    <button matTooltip="Włącz/wyłącz przełączanie zakładek" [ngClass]="settings.TabSwitch?'tabSwitchOn':'tabSwitchOff'" id="tabSwitchToggle" mat-mini-fab color="accent" (click)="toggleTabSwitch()">
+    <button matTooltip="Włącz/wyłącz przełączanie zakładek" class="btn" [ngClass]="settings.TabSwitch?'tabSwitchOn':'tabSwitchOff'" id="tabSwitchToggle" mat-mini-fab color="accent" (click)="toggleTabSwitch()">
       <mat-icon>swap_horizontal_circle</mat-icon>
+    </button>
+    <button matTooltip="Eksportuj do Excela" class="btn" id="tabToExcel" mat-mini-fab color="accent" (click)="exportToExcel()">
+      <mat-icon>download</mat-icon>
     </button>
     <span class="title"><h1>Tablica wydajności</h1></span>
   </mat-toolbar-row>
