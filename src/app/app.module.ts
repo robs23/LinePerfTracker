@@ -16,6 +16,7 @@ import { ScanningItemsComponent } from './scanningItems/scanningItems.component'
 import { Settings } from './settings';
 import { PerformanceChartComponent } from './performance-chart/performance-chart.component';
 import { ShiftViewComponent } from './shift-view/shift-view.component';
+import { SpinnerService } from './services/spinner.service';
 
 @NgModule({
    declarations: [				
@@ -37,7 +38,7 @@ import { ShiftViewComponent } from './shift-view/shift-view.component';
       FormsModule,
       HttpClientModule
    ],
-   providers: [ Settings ],
+   providers: [ Settings, SpinnerService ],
    bootstrap: [
       AppComponent
    ]

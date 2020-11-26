@@ -8,6 +8,8 @@ import { UserInteractionService } from '../services/userInteraction.service';
 import { Span, RowSpanComputer } from '../row-span-computer';
 import { ValueConverter } from '@angular/compiler/src/render3/view/template';
 import * as XLSX from 'xlsx'; 
+import { SpinnerService } from '../services/spinner.service';
+import { MatDialogRef } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-scanningItems',
@@ -32,7 +34,7 @@ export class ScanningItemsComponent implements OnInit, OnDestroy {
   tabSwitchSource = interval(10000); //emit value in sequence every 10 second
   exportButtonClickedSub: Subscription;
 
-  constructor(private scanningItemService: ScanningItemService, private userInteractionService: UserInteractionService) { 
+  constructor(private scanningItemService: ScanningItemService, private userInteractionService: UserInteractionService, private spinnerService: SpinnerService) {
     this.autoUpdateSub = userInteractionService.autoUpdateClicked$.subscribe(
       value => {
         if(value){
@@ -60,13 +62,19 @@ export class ScanningItemsComponent implements OnInit, OnDestroy {
     );
     this.exportButtonClickedSub = userInteractionService.exportClicked$.subscribe(
       value => {
-        this.exportToExcel();
+        //this.exportToExcel();
+        this.jasonToExcel();
       }
     )
   }
 
   ngOnInit() {
+    var spinnerRef = this.spinnerService.start();
     this.subscription = timer(0, 60000).pipe(
+      finalize(() => {
+        console.log("Koniec");
+        this.spinnerService.stop(spinnerRef);
+      }),
       switchMap(() => this.scanningItemService.getScanningItems(this.MachineId)),
       catchError(err => of([]))).subscribe(response => {
         this.ScanningItems = response;
@@ -100,7 +108,7 @@ export class ScanningItemsComponent implements OnInit, OnDestroy {
     }
   }
 
-  exportToExcel(): void{
+  tableToExcel(): void{
     /* table id is passed over here */   
     let tableId: string = "";
     if(this.selectedTab==0){
@@ -117,6 +125,24 @@ export class ScanningItemsComponent implements OnInit, OnDestroy {
 
     /* save to file */
     XLSX.writeFile(wb, `linetracker_${Date().toString()}.xlsx`);
+  }
+
+  jasonToExcel(): void{
+    /* table id is passed over here */   
+    var spinnerRef = this.spinnerService.start();
+
+    const ws: XLSX.WorkSheet =XLSX.utils.json_to_sheet(this.ScanningItems);
+
+    /* generate workbook and add the worksheet */
+    const wb: XLSX.WorkBook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+
+    /* save to file */
+    XLSX.writeFile(wb, `linetracker_${new Date().toLocaleDateString()}_${new Date().toLocaleTimeString()}.xlsx`);
+    setTimeout(() => {
+      this.spinnerService.stop(spinnerRef);
+    },2500);
+    
   }
 
   }

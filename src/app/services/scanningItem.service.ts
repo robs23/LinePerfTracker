@@ -15,6 +15,7 @@ constructor(
 ) { }
 
 getScanningItems(MachineId: number): Observable<ScanningItem[]>{
+  console.log("ScanningItemService wystartował");
   return this.http.get<ScanningItem[]>(secrets.ApiAddress + 'GetRecentScans?MachineId=' + MachineId + '&EanType=2').pipe(catchError(err => of([])))
 }
 }
