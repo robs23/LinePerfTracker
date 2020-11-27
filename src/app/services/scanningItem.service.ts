@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import * as secrets from '../secrets';
 import { ScanningItem } from '../scanningItem';
-import { catchError } from 'rxjs/operators';
+import { catchError, finalize } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'

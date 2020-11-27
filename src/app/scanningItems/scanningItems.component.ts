@@ -78,7 +78,8 @@ export class ScanningItemsComponent implements OnInit, OnDestroy {
       switchMap(() => this.scanningItemService.getScanningItems(this.MachineId)),
       catchError(err => of([]))).subscribe(response => {
         this.ScanningItems = response;
-        this.computeRowSpans();}
+        this.computeRowSpans();
+        this.spinnerService.stop(spinnerRef);}
         );
     this.tabSwitchSub = this.tabSwitchSource.subscribe(() => this.nextTab());
   }
