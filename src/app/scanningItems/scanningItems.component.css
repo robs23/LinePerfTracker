@@ -2,8 +2,12 @@
 .mat-header-cell{
   font-style: normal;
   font-weight: 500;
-  font-size: 1.2em;
+  font-size: 1.5em;
   color: black !important;
+}
+
+.mat-cell{
+  font-size: 1.4em;
 }
 
 .main-container {

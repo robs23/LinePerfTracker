@@ -73,7 +73,7 @@
       <ng-container matColumnDef="Contaminated">
         <th mat-header-cell *matHeaderCellDef>Odrzut XRay</th>
         <td mat-cell *matCellDef="let row; let iRow = index">
-          {{ row.Contaminated.toFixed(1) }}
+          {{ row.Contaminated.toFixed(0) }}
         </td>
       </ng-container>
 
@@ -89,7 +89,7 @@
             negative: row.Speed < row.AssumedSpeed
           }"
         >
-          {{ row.Speed.toFixed(1) }}
+          {{ row.Speed.toFixed(0) }}
         </td>
       </ng-container>
 

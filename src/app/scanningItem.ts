@@ -9,6 +9,8 @@ export class ScanningItem {
     QuantityFromFoil: number;
     QuantityFromBoxes: number;
     FoilLossPercentage: number;
+    AssumedFoilLossPercentage: number;
+    FoilLossPercentageDiff: number;
     Speed: number;
     AssumedSpeed: number;
     EanType: number;
