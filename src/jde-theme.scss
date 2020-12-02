@@ -1,0 +1,10 @@
+@import '../node_modules/@angular/material/theming';
+
+@include mat-core();
+
+$jde-theme-primary: mat-palette($mat-brown);
+$jde-theme-accent: mat-palette($mat-lime);
+
+$jde-theme: mat-light-theme($jde-theme-primary, $jde-theme-accent);
+
+@include angular-material-theme($jde-theme);

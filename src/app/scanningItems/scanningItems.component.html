@@ -1,6 +1,6 @@
 
 <div>
-  <mat-tab-group [selectedIndex]="tabsToSwitch[selectedTab]">
+  <mat-tab-group (selectedTabChange)="onTabChanged($event)" [selectedIndex]="tabsToSwitch[selectedTab]">
       <mat-tab label="Godzinowo">
         <div *ngIf="ScanningItems!=undefined">
           <div class="perf-table-container" *ngIf="ScanningItems.length>0">
@@ -68,7 +68,7 @@
                   [ngClass]="{
                     'positive' : row.FoilLossPercentageDiff > 0,
                     'negative' : row.FoilLossPercentageDiff < 0
-                 }">{{ row.FoilLossPercentageDiff.toFixed(1) }}</td>
+                 }">{{ row.FoilLossPercentageDiff != null ? row.FoilLossPercentageDiff.toFixed(1) : null }}</td>
                 </ng-container>
           
                 <!-- Speed Column -->
@@ -108,7 +108,7 @@
       </mat-tab>
       <mat-tab label="Zmianowo">
         <ng-template matTabContent>
-          <app-shift-view [scanningItems]="ScanningItems"></app-shift-view>
+          <app-shift-view [scanningItems]="ScanningItems" (shiftItemsChanged)="onShiftItemsChanged($event)"></app-shift-view>
         </ng-template>
       </mat-tab>
       <mat-tab label="Wykres">

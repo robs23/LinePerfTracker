@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { ShiftItem } from '../shiftItem';
 import { ScanningItemsTransformer } from '../scanning-items-transformer'; 
 
@@ -9,6 +9,7 @@ import { ScanningItemsTransformer } from '../scanning-items-transformer';
 })
 export class ShiftViewComponent implements OnInit {
   @Input() scanningItems;
+  @Output() shiftItemsChanged = new EventEmitter<ShiftItem[]>();
   items: ShiftItem[];
   private scanningItemsTransformer = new ScanningItemsTransformer();
   displayedColumns: string[] = ['Date', 'Name', 'ScanningHourFirst', 'ScanningHourLast', 'WorkingHours' , 'ConfirmedKg', 'Quantity', 'QuantityKg' , 'FoilLossPercentage', 'Contaminated',  'Speed', 'GE', 'ChangeOvers', 'Zfins'];  
@@ -21,6 +22,7 @@ export class ShiftViewComponent implements OnInit {
   prepareData(): void{
     this.items = this.scanningItemsTransformer.toShiftView(this.scanningItems);
     this.items = this.items.reverse();
+    this.shiftItemsChanged.emit(this.items);
   }
 
 }

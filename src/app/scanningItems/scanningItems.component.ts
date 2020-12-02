@@ -10,6 +10,8 @@ import { ValueConverter } from '@angular/compiler/src/render3/view/template';
 import * as XLSX from 'xlsx'; 
 import { SpinnerService } from '../services/spinner.service';
 import { MatDialogRef } from '@angular/material/dialog';
+import { ShiftItem } from '../shiftItem';
+import { Settings } from '../settings';
 
 @Component({
   selector: 'app-scanningItems',
@@ -33,8 +35,9 @@ export class ScanningItemsComponent implements OnInit, OnDestroy {
   tabsToSwitch: number[] = [0, 1, 2];
   tabSwitchSource = interval(10000); //emit value in sequence every 10 second
   exportButtonClickedSub: Subscription;
+  shiftItems: ShiftItem[];
 
-  constructor(private scanningItemService: ScanningItemService, private userInteractionService: UserInteractionService, private spinnerService: SpinnerService) {
+  constructor(public settings: Settings, private scanningItemService: ScanningItemService, private userInteractionService: UserInteractionService, private spinnerService: SpinnerService) {
     this.autoUpdateSub = userInteractionService.autoUpdateClicked$.subscribe(
       value => {
         if(value){
@@ -81,7 +84,10 @@ export class ScanningItemsComponent implements OnInit, OnDestroy {
         this.computeRowSpans();
         this.spinnerService.stop(spinnerRef);}
         );
-    this.tabSwitchSub = this.tabSwitchSource.subscribe(() => this.nextTab());
+    if(this.settings.TabSwitch){
+      this.tabSwitchSub = this.tabSwitchSource.subscribe(() => this.nextTab());
+    }
+    
   }
 
   getScanningItems(): void{
@@ -109,6 +115,14 @@ export class ScanningItemsComponent implements OnInit, OnDestroy {
     }
   }
 
+  toExcel(): void{
+    if(this.selectedTab==0){
+      this.jasonToExcel();
+    }else{
+      this.tableToExcel();
+    }
+  }
+
   tableToExcel(): void{
     /* table id is passed over here */   
     let tableId: string = "";
@@ -131,8 +145,12 @@ export class ScanningItemsComponent implements OnInit, OnDestroy {
   jasonToExcel(): void{
     /* table id is passed over here */   
     var spinnerRef = this.spinnerService.start();
-
-    const ws: XLSX.WorkSheet =XLSX.utils.json_to_sheet(this.ScanningItems);
+    let ws: XLSX.WorkSheet;
+    if(this.selectedTab==0){
+      ws =XLSX.utils.json_to_sheet(this.ScanningItems);
+    }else{
+      ws =XLSX.utils.json_to_sheet(this.shiftItems);
+    }
 
     /* generate workbook and add the worksheet */
     const wb: XLSX.WorkBook = XLSX.utils.book_new();
@@ -144,6 +162,15 @@ export class ScanningItemsComponent implements OnInit, OnDestroy {
       this.spinnerService.stop(spinnerRef);
     },2500);
     
+  }
+
+  onTabChanged(arg){
+    let currentTabIndex = arg.index;
+    this.selectedTab = currentTabIndex;
+  }
+
+  onShiftItemsChanged(shiftItems: ShiftItem[]){
+    this.shiftItems = shiftItems;
   }
 
   }
