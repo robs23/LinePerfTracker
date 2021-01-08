@@ -11,6 +11,7 @@ import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {MatTabsModule} from '@angular/material/tabs';
 import {MatDialogModule} from '@angular/material/dialog';
+import {MatGridListModule} from '@angular/material/grid-list';
 
 const MaterialComponents = [
   MatButtonModule,
@@ -24,7 +25,8 @@ const MaterialComponents = [
   MatSlideToggleModule,
   MatTooltipModule,
   MatTabsModule,
-  MatDialogModule
+  MatDialogModule,
+  MatGridListModule
 ];
 
 @NgModule({

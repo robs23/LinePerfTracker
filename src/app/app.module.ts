@@ -17,9 +17,11 @@ import { Settings } from './settings';
 import { PerformanceChartComponent } from './performance-chart/performance-chart.component';
 import { ShiftViewComponent } from './shift-view/shift-view.component';
 import { SpinnerService } from './services/spinner.service';
+import { FormsComponent } from './forms/forms.component';
+import { ModPickerComponent } from './mod-picker/mod-picker.component';
 
 @NgModule({
-   declarations: [				
+   declarations: [						
       AppComponent,
       MachinesComponent,
       LinePerformanceComponent,
@@ -28,7 +30,9 @@ import { SpinnerService } from './services/spinner.service';
       WelcomeComponent,
       ScanningItemsComponent,
       PerformanceChartComponent,
-      ShiftViewComponent
+      ShiftViewComponent,
+      FormsComponent,
+      ModPickerComponent
    ],
    imports: [
       BrowserModule,
