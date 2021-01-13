@@ -19,9 +19,10 @@ import { ShiftViewComponent } from './shift-view/shift-view.component';
 import { SpinnerService } from './services/spinner.service';
 import { FormsComponent } from './forms/forms.component';
 import { ModPickerComponent } from './mod-picker/mod-picker.component';
+import { DividerComponent } from './divider/divider.component';
 
 @NgModule({
-   declarations: [						
+   declarations: [							
       AppComponent,
       MachinesComponent,
       LinePerformanceComponent,
@@ -32,7 +33,8 @@ import { ModPickerComponent } from './mod-picker/mod-picker.component';
       PerformanceChartComponent,
       ShiftViewComponent,
       FormsComponent,
-      ModPickerComponent
+      ModPickerComponent,
+      DividerComponent
    ],
    imports: [
       BrowserModule,

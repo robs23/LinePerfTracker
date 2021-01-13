@@ -1,0 +1,18 @@
+<div *ngIf="divider != undefined">
+  <table *ngIf="divider.length > 0" class="perf-table" id="perf-table">
+    <thead>
+      <tr>
+        <th>Indeks</th>
+        <th>Lokacje</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let d of divider">
+        <td>{{d.ZfinIndex}}</td>
+        <td *ngFor="let l of d.Locations">{{l.L + " & " + l.Amount}}</td>
+      </tr>
+    </tbody>
+  </table>
+  <div class="no-records" *ngIf="divider.length===0">Nic tu jeszcze nie ma..</div>
+</div>
+<div class="no-records" *ngIf="divider == undefined">Nie znaleziono danych..</div>
