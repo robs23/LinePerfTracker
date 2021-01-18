@@ -1,15 +1,15 @@
 <div *ngIf="divider != undefined">
-  <table *ngIf="divider.length > 0" class="perf-table" id="perf-table">
+  <table *ngIf="divider.length > 0" class="div-table" id="div-table">
     <thead>
       <tr>
         <th>Indeks</th>
-        <th>Lokacje</th>
+        <th *ngFor="let u of unicorns">{{u}}</th>
       </tr>
     </thead>
     <tbody>
       <tr *ngFor="let d of divider">
         <td>{{d.ZfinIndex}}</td>
-        <td *ngFor="let l of d.Locations">{{l.L + " & " + l.Amount}}</td>
+        <td *ngFor="let u of unicorns">{{divider.filter()}}</td>
       </tr>
     </tbody>
   </table>

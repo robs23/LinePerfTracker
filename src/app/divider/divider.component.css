@@ -9,6 +9,10 @@
   .mat-cell{
     font-size: 1.4em;
   }
+
+  .div-table tr, td, th{
+    border: solid;
+  }
   
   .main-container {
       position: relative;

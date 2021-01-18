@@ -10,6 +10,7 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class DividerComponent implements OnInit {
   divider: DividerItem[];
+  unicorns: string[] = Array(); // Unique L-plants
   week: number;
   year: number;
   columnNames: string[] = ['ZfinIndex', 'Locations'];
@@ -29,10 +30,27 @@ export class DividerComponent implements OnInit {
       this.year = Number(sYear);
     }
     this.getDivider(this.week, this.year);
+    
   }
 
   getDivider(week: number, year: number): void{
-    this.dividerService.getDivider(week, year).subscribe(response => this.divider = response);
+    this.dividerService.getDivider(week, year).subscribe(response => {
+      this.divider = response;
+      this.getUniqueLplants(this.divider);
+      });
+    
+  }
+
+  getUniqueLplants(div: DividerItem[]){
+    for(var d of div){
+      for(var l of d.Locations){
+        if(this.unicorns.filter(x=>x==l.L).length == 0){
+          //L is unique
+          this.unicorns.push(l.L);
+        }
+      }
+    }
+    this.unicorns.sort();
   }
 
 }
