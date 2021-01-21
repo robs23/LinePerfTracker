@@ -20,9 +20,10 @@ import { SpinnerService } from './services/spinner.service';
 import { FormsComponent } from './forms/forms.component';
 import { ModPickerComponent } from './mod-picker/mod-picker.component';
 import { DividerComponent } from './divider/divider.component';
+import { VirtualTrucksComponent } from './virtual-trucks/virtual-trucks.component';
 
 @NgModule({
-   declarations: [							
+   declarations: [								
       AppComponent,
       MachinesComponent,
       LinePerformanceComponent,
@@ -34,7 +35,8 @@ import { DividerComponent } from './divider/divider.component';
       ShiftViewComponent,
       FormsComponent,
       ModPickerComponent,
-      DividerComponent
+      DividerComponent,
+      VirtualTrucksComponent
    ],
    imports: [
       BrowserModule,

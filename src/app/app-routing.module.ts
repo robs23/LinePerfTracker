@@ -6,6 +6,7 @@ import { LinePerformanceComponent } from './line-performance/line-performance.co
 import { FormsComponent } from './forms/forms.component';
 import { ModPickerComponent } from './mod-picker/mod-picker.component';
 import { DividerComponent } from './divider/divider.component';
+import { VirtualTrucksComponent } from './virtual-trucks/virtual-trucks.component';
 
 const routes: Routes = [
   { path: '', component: ModPickerComponent},
@@ -13,6 +14,7 @@ const routes: Routes = [
   { path: 'forms', component: FormsComponent},
   { path: 'divider/:week/:year', component: DividerComponent},
   { path: 'divider', component: DividerComponent},
+  { path: 'trucks', component: VirtualTrucksComponent},
   { 
     path: 'linePerformance', 
     component: LinePerformanceComponent,
