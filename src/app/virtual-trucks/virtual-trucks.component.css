@@ -1,7 +1,5 @@
-#divChart{
-    display: block;
-    margin: 0 auto;
-    padding-top: 20px;
-    width: 70%;
-    height: 60%;
+#visualization {
+    width: 600px;
+    height: 400px;
+    border: 1px solid lightgray;
 }

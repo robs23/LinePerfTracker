@@ -1,6 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { MachinesComponent } from './machines/machines.component';
@@ -21,9 +20,10 @@ import { FormsComponent } from './forms/forms.component';
 import { ModPickerComponent } from './mod-picker/mod-picker.component';
 import { DividerComponent } from './divider/divider.component';
 import { VirtualTrucksComponent } from './virtual-trucks/virtual-trucks.component';
+import { ProductionPlanByCountryComponent } from './production-plan-by-country/production-plan-by-country.component';
 
 @NgModule({
-   declarations: [								
+   declarations: [									
       AppComponent,
       MachinesComponent,
       LinePerformanceComponent,
@@ -36,7 +36,8 @@ import { VirtualTrucksComponent } from './virtual-trucks/virtual-trucks.componen
       FormsComponent,
       ModPickerComponent,
       DividerComponent,
-      VirtualTrucksComponent
+      VirtualTrucksComponent,
+      ProductionPlanByCountryComponent
    ],
    imports: [
       BrowserModule,
