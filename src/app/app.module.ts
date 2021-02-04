@@ -21,9 +21,11 @@ import { ModPickerComponent } from './mod-picker/mod-picker.component';
 import { DividerComponent } from './divider/divider.component';
 import { VirtualTrucksComponent } from './virtual-trucks/virtual-trucks.component';
 import { ProductionPlanByCountryComponent } from './production-plan-by-country/production-plan-by-country.component';
+import { NgApexchartsModule } from 'node_modules/ng-apexcharts';
+import { VirtualTrucksChartComponent } from './virtual-trucks-chart/virtual-trucks-chart.component';
 
 @NgModule({
-   declarations: [									
+   declarations: [										
       AppComponent,
       MachinesComponent,
       LinePerformanceComponent,
@@ -37,7 +39,8 @@ import { ProductionPlanByCountryComponent } from './production-plan-by-country/p
       ModPickerComponent,
       DividerComponent,
       VirtualTrucksComponent,
-      ProductionPlanByCountryComponent
+      ProductionPlanByCountryComponent,
+      VirtualTrucksChartComponent
    ],
    imports: [
       BrowserModule,
@@ -45,7 +48,8 @@ import { ProductionPlanByCountryComponent } from './production-plan-by-country/p
       BrowserAnimationsModule,
       MaterialModule,
       FormsModule,
-      HttpClientModule
+      HttpClientModule,
+      NgApexchartsModule
    ],
    providers: [ Settings, SpinnerService ],
    bootstrap: [

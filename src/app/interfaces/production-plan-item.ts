@@ -16,5 +16,7 @@ export interface ProductionPlanItem {
     QUANTITY: number,
     WEIGHT: number,
     PAL: number,
-    LOCATION: string
+    LOCATION: string,
+    DIVIDER_WEEK: number,
+    DIVIDER_YEAR: number
 }

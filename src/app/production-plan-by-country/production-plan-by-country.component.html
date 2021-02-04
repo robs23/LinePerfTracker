@@ -52,7 +52,10 @@
         <!-- PRODUCT_NR Column -->
         <ng-container matColumnDef="PRODUCT_NR">
           <th mat-header-cell *matHeaderCellDef> Produkt </th>
-          <td mat-cell *matCellDef="let row">{{ row.PRODUCT_NR }}</td>
+          <td mat-cell *matCellDef="let row" [ngClass]="{
+            'divider' : row.DIVIDER_WEEK > 0,
+            'default' : row.DIVIDER_WEEK == 0
+         }">{{ row.PRODUCT_NR }}</td>
         </ng-container>
 
         <!-- NAME Column -->
