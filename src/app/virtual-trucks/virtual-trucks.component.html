@@ -1,1 +1,10 @@
-<div id="visualization"></div>
+<div>
+    <mat-tab-group (selectedTabChange)="onTabChanged($event)">
+        <mat-tab label="Dane">
+
+        </mat-tab>
+        <mat-tab label="Wykres">
+            <ng-template matTabContent>
+                <app-virtual-trucks-chart [trucks]="Trucks"></app-virtual-trucks-chart>
+            </ng-template>
+        </mat-tab>

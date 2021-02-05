@@ -8,6 +8,7 @@ import { ModPickerComponent } from './mod-picker/mod-picker.component';
 import { DividerComponent } from './divider/divider.component';
 import { VirtualTrucksComponent } from './virtual-trucks/virtual-trucks.component';
 import { ProductionPlanByCountryComponent } from './production-plan-by-country/production-plan-by-country.component';
+import { VirtualTrucksChartComponent } from './virtual-trucks-chart/virtual-trucks-chart.component';
 
 const routes: Routes = [
   { path: '', component: ModPickerComponent},
@@ -16,6 +17,7 @@ const routes: Routes = [
   { path: 'divider/:week/:year', component: DividerComponent},
   { path: 'divider', component: DividerComponent},
   { path: 'trucks', component: VirtualTrucksComponent},
+  { path: 'truckschart', component: VirtualTrucksChartComponent},
   { path: 'planbylocation', component: ProductionPlanByCountryComponent},
   { 
     path: 'linePerformance', 

@@ -1,8 +1,10 @@
-<div style="text-align:center">
+<div id="chart">
   <apx-chart
     [series]="chartOptions.series"
     [chart]="chartOptions.chart"
+    [fill]="chartOptions.fill"
+    [legend]="chartOptions.legend"
+    [plotOptions]="chartOptions.plotOptions"
     [xaxis]="chartOptions.xaxis"
-    [title]="chartOptions.title"
   ></apx-chart>
 </div>
