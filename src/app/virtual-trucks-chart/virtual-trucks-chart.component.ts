@@ -1,5 +1,6 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { VirtualTruck } from '../interfaces/virtual-truck';
+import { VirtualTruckService } from '../services/virtual-truck.service';
 
 import {
   ChartComponent,
@@ -11,6 +12,8 @@ import {
   ApexLegend,
   NgApexchartsModule
 } from "ng-apexcharts";
+import { config } from 'rxjs';
+import { VirtualTruckItemsComponent } from '../virtual-truck-items/virtual-truck-items.component';
 
 export type ChartOptions = {
   series: ApexAxisChartSeries;
@@ -41,8 +44,9 @@ export class VirtualTrucksChartComponent implements OnInit {
   @Input() trucks;
   public chartOptions: Partial<ChartOptions>;
   unicorns: string[] = Array(); // Unique L-plants
+  truckPageRef;
 
-  constructor() { 
+  constructor(private vtService: VirtualTruckService) { 
     
   }
 
@@ -67,11 +71,14 @@ export class VirtualTrucksChartComponent implements OnInit {
     this.getUniqueLplants(this.trucks);
 
     dSeries = [];
+    let sCounter: number = 0; // series 
+    let dpCounter: number = 0; // data point
     
 
     for(var u of this.unicorns){
       var ddata = [];
       let dd: any;
+      dpCounter=0;
 
       for(var t of this.trucks.filter(f=>f.L == u)){
         dd = {
@@ -79,6 +86,9 @@ export class VirtualTrucksChartComponent implements OnInit {
           y: [new Date(t.ProductionStart).getTime(), new Date(t.ProductionEnd).getTime()]
         }
         ddata.push(dd);
+        t.SeriesIndex = sCounter;
+        t.DataPointIndex = dpCounter;
+        dpCounter++;
       }
 
       dSerie = 
@@ -87,7 +97,9 @@ export class VirtualTrucksChartComponent implements OnInit {
         data: ddata
       }
       dSeries.push(dSerie);
+      sCounter++;
     }
+    
     return dSeries;
   }
 
@@ -96,7 +108,12 @@ export class VirtualTrucksChartComponent implements OnInit {
       series: this.prepareData(),
       chart: {
         height: 450,
-        type: "rangeBar"
+        type: "rangeBar",
+        events: {
+          dataPointSelection: (e, chart, opts) => {
+            this.showTruckPage(e, chart, opts);
+          }
+        }
       },
       plotOptions: {
         bar: {
@@ -125,78 +142,14 @@ export class VirtualTrucksChartComponent implements OnInit {
         horizontalAlign: "left"
       }
     };
-    // this.chartOptions = {
-    //   series: [
-    //     {
-    //       name: "L064",
-    //       data: [
-    //         {
-    //           x: "Plan",
-    //           y: [
-    //             new Date("2019-03-05").getTime(),
-    //             new Date("2019-03-08").getTime()
-    //           ]
-    //         },
-    //         {
-    //           x: "Plan",
-    //           y: [
-    //             new Date("2019-03-01").getTime(),
-    //             new Date("2019-03-03").getTime()
-    //           ]
-    //         }
-    //       ]
-    //     },
-    //     {
-    //       name: "L048",
-    //       data: [
-    //         {
-    //           x: "Plan",
-    //           y: [
-    //             new Date("2019-03-02").getTime(),
-    //             new Date("2019-03-05").getTime()
-    //           ]
-    //         },
-    //         {
-    //           x: "Plan",
-    //           y: [
-    //             new Date("2019-03-06").getTime(),
-    //             new Date("2019-03-16").getTime()
-    //           ]
-    //         }
-    //       ]
-    //     }
-    //   ],
-    //   chart: {
-    //     height: 450,
-    //     type: "rangeBar"
-    //   },
-    //   plotOptions: {
-    //     bar: {
-    //       horizontal: true,
-    //       barHeight: "80%"
-    //     }
-    //   },
-    //   xaxis: {
-    //     type: "datetime"
-    //   },
-    //   fill: {
-    //     type: "gradient",
-    //     gradient: {
-    //       shade: "light",
-    //       type: "vertical",
-    //       shadeIntensity: 0.25,
-    //       gradientToColors: undefined,
-    //       inverseColors: true,
-    //       opacityFrom: 1,
-    //       opacityTo: 1,
-    //       stops: [50, 0, 100, 100]
-    //     }
-    //   },
-    //   legend: {
-    //     position: "top",
-    //     horizontalAlign: "left"
-    //   }
-    // };
+
+  }
+
+  showTruckPage(e, chart, opts): void{
+    let currTruck: VirtualTruck;
+    currTruck = this.trucks.filter(i=>i.SeriesIndex==opts.seriesIndex && i.DataPointIndex==opts.dataPointIndex);
+    this.truckPageRef = this.vtService.openItemsPage(currTruck);
+    console.log("Seria: " + opts.seriesIndex + ", punkt: " + opts.dataPointIndex);
   }
 
 }

@@ -23,9 +23,10 @@ import { VirtualTrucksComponent } from './virtual-trucks/virtual-trucks.componen
 import { ProductionPlanByCountryComponent } from './production-plan-by-country/production-plan-by-country.component';
 import { NgApexchartsModule } from 'node_modules/ng-apexcharts';
 import { VirtualTrucksChartComponent } from './virtual-trucks-chart/virtual-trucks-chart.component';
+import { VirtualTruckItemsComponent } from './virtual-truck-items/virtual-truck-items.component';
 
 @NgModule({
-   declarations: [										
+   declarations: [											
       AppComponent,
       MachinesComponent,
       LinePerformanceComponent,
@@ -40,7 +41,8 @@ import { VirtualTrucksChartComponent } from './virtual-trucks-chart/virtual-truc
       DividerComponent,
       VirtualTrucksComponent,
       ProductionPlanByCountryComponent,
-      VirtualTrucksChartComponent
+      VirtualTrucksChartComponent,
+      VirtualTruckItemsComponent
    ],
    imports: [
       BrowserModule,

@@ -5,5 +5,7 @@ export interface VirtualTruck {
     ProductionStart: string,
     ProductionEnd: string,
     TotalPallets: number,
-    Parts: ProductionPlanItem[]
+    Parts: ProductionPlanItem[],
+    SeriesIndex: number,
+    DataPointIndex: number
 }
