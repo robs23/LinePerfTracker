@@ -1,17 +1,17 @@
-<h2 mat-dialog-mat-dialog-title>{{VT.L}} - {{VT.TotalPallets}} palet</h2>
+<h2 mat-dialog-mat-dialog-title>{{VT.L}} - {{VT.TotalPallets}} palet. {{VT.ProductionStart | date: 'yyyy-MM-dd HH:mm'}} - {{VT.ProductionEnd | date: 'yyyy-MM-dd HH:mm'}}</h2>
   <div class="vt-items-container">
     <table mat-table [dataSource]="VT.Parts" class="perf-table" id="perf-table">
       
       <!-- START_DATE Column -->
       <ng-container matColumnDef="START_DATE">
         <th mat-header-cell *matHeaderCellDef> Start </th>
-        <td mat-cell *matCellDef="let row">{{ row.START_DATE | date: 'yyyy-MM-dd' }}</td>
+        <td mat-cell *matCellDef="let row">{{ row.START_DATE | date: 'yyyy-MM-dd HH:mm' }}</td>
       </ng-container>
 
       <!-- STOP_DATE Column -->
       <ng-container matColumnDef="STOP_DATE">
         <th mat-header-cell *matHeaderCellDef> Koniec </th>
-        <td mat-cell *matCellDef="let row">{{ row.STOP_DATE | date: 'yyyy-MM-dd' }}</td>
+        <td mat-cell *matCellDef="let row">{{ row.STOP_DATE | date: 'yyyy-MM-dd HH:mm' }}</td>
       </ng-container>
 
       <!-- PRODUCT_NR Column -->
@@ -24,6 +24,15 @@
       <ng-container matColumnDef="PAL">
         <th mat-header-cell *matHeaderCellDef> Pal </th>
         <td mat-cell *matCellDef="let row">{{ row.PAL.toFixed(0) }}</td>
+      </ng-container>
+
+      <!-- Divider Column -->
+      <ng-container matColumnDef="Divider">
+        <th mat-header-cell *matHeaderCellDef> Div </th>
+        <td mat-cell *matCellDef="let row" [ngClass]="{
+          'divider' : row.DIVIDER_WEEK > 0,
+          'non-divider' : row.DIVIDER_WEEK == 0
+       }">{{ row.DIVIDER_WEEK}} | {{row.DIVIDER_YEAR}}</td>
       </ng-container>
 
       <!-- MACHINE_NAME Column -->

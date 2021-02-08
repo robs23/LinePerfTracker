@@ -13,6 +13,7 @@
 .mat-header-cell{
     font-style: normal;
     font-weight: 500;
+    padding: 20px !important;
     font-size: 1em;
     color: black !important;
   }
@@ -20,6 +21,7 @@
   .mat-cell{
     font-size: 1em;
     margin: 25px !important;
+    padding: 20px !important;
     color: black !important;
   }
   
@@ -38,6 +40,9 @@
       width: 100%;
     }
     
+    .non-divider{
+      color: white !important;
+    }
     
   
   th{
