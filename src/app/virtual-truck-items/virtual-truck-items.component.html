@@ -2,6 +2,12 @@
   <div class="vt-items-container">
     <table mat-table [dataSource]="VT.Parts" class="perf-table" id="perf-table">
       
+      <!-- IS_FINISHED Column -->
+      <ng-container matColumnDef="IS_FINISHED">
+        <th mat-header-cell *matHeaderCellDef> Status </th>
+        <td mat-cell *matCellDef="let row"><mat-icon [ngClass]="row.STATUS=='FI'?'green-icon':'gray-icon'">stop_circle</mat-icon></td>
+      </ng-container>
+
       <!-- START_DATE Column -->
       <ng-container matColumnDef="START_DATE">
         <th mat-header-cell *matHeaderCellDef> Start </th>

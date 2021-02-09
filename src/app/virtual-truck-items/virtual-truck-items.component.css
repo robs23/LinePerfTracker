@@ -50,3 +50,15 @@
     word-wrap: break-word !important;
     max-width: 80px !important;
   }
+
+  mat-icon{
+    margin-right:  10px;
+}
+
+.gray-icon {
+    color: gray;
+}
+
+.green-icon {
+    color: green;
+}

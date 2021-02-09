@@ -9,7 +9,7 @@ import { VirtualTruck } from '../interfaces/virtual-truck';
 })
 export class VirtualTruckItemsComponent implements OnInit {
   VT: VirtualTruck;
-  displayedColumns: string[] = ['START_DATE', 'STOP_DATE','PRODUCT_NR', 'PAL','Divider', 'MACHINE_NAME', 'ORDER_NR'];
+  displayedColumns: string[] = ['IS_FINISHED','START_DATE', 'STOP_DATE','PRODUCT_NR', 'PAL','Divider', 'MACHINE_NAME', 'ORDER_NR'];
 
   constructor(public dialogRef: MatDialogRef<VirtualTruckItemsComponent>, @Inject(MAT_DIALOG_DATA) public data: any) { 
     

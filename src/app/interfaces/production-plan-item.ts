@@ -18,5 +18,6 @@ export interface ProductionPlanItem {
     PAL: number,
     LOCATION: string,
     DIVIDER_WEEK: number,
-    DIVIDER_YEAR: number
+    DIVIDER_YEAR: number,
+    STATUS: string
 }
