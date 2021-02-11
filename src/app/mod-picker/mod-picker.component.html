@@ -1,5 +1,6 @@
-
-  <mat-grid-tile cols="2" rowHeight="2:1">
+  <mat-grid-list cols="2" rowHeight="2:1">
     <mat-grid-tile [routerLink]="['/linePerformance']"><img src="assets/favicon.png"/>Tablica wydajności</mat-grid-tile>
     <mat-grid-tile [routerLink]="['/divider']"><img src="assets/divider.png"/>Divider</mat-grid-tile>
-  <mat-grid-tile [routerLink]="['/planbylocation']"><img src="assets/gantt.png"/></mat-grid-tile>
+    <mat-grid-tile [routerLink]="['/trucks']"><img src="assets/gantt.png"/>Planowane samochody</mat-grid-tile>
+    <mat-grid-tile [routerLink]="['/planbylocation']"><img src="assets/destinations.png"/>Plan wg lokacji</mat-grid-tile>
+  </mat-grid-list>

@@ -4,6 +4,7 @@ import { ProductionPlanTransformer } from '../production-plan-transformer';
 import { ProductionPlanItem } from '../interfaces/production-plan-item';
 import { Location } from '../interfaces/location';
 import { RowSpanComputer, Span } from '../row-span-computer';
+import { ActivatedRoute, Params } from '@angular/router';
 
 @Component({
   selector: 'app-production-plan-by-country',
@@ -19,10 +20,19 @@ export class ProductionPlanByCountryComponent implements OnInit {
   private rowSpanComputer = new RowSpanComputer();
   displayedColumns: string[] = ['LOCATION', 'WEEK','YEAR','START_DATE','STOP_DATE','MACHINE_NAME','ORDER_NR','PRODUCT_NR','NAME','QUANTITY','PAL'];
 
-  constructor(private planService: ProductionPlanService) { }
+  constructor(private planService: ProductionPlanService, private params: ActivatedRoute) { }
 
   ngOnInit() {
-    this.getPlanByLocations();
+    let query: string = '';
+    this.params.queryParams.subscribe(params => {
+      query = params['query'];
+    })
+    if(query == undefined){
+      this.getPlanByLocations();
+    }else{
+      this.getPlanByLocations(query);
+    }
+
   }
 
   getPlanByLocations(query?: string): void{
