@@ -10,6 +10,9 @@ import {
   ApexXAxis,
   ApexFill,
   ApexLegend,
+  ApexGrid,
+  ApexStroke,
+  ApexAnnotations,
   NgApexchartsModule
 } from "ng-apexcharts";
 import { config } from 'rxjs';
@@ -22,6 +25,9 @@ export type ChartOptions = {
   legend: ApexLegend;
   xaxis: ApexXAxis;
   plotOptions: ApexPlotOptions;
+  grid: ApexGrid;
+  stroke: ApexStroke;
+  annotation: ApexAnnotations
 };
 
 var colors = [
@@ -82,7 +88,7 @@ export class VirtualTrucksChartComponent implements OnInit {
 
       for(var t of this.trucks.filter(f=>f.L == u)){
         dd = {
-          x: "Plan",
+          x: "|",
           y: [new Date(t.ProductionStart).getTime(), new Date(t.ProductionEnd).getTime()]
         }
         ddata.push(dd);
@@ -107,7 +113,7 @@ export class VirtualTrucksChartComponent implements OnInit {
     this.chartOptions = {
       series: this.prepareData(),
       chart: {
-        height: 450,
+        height: 650,
         type: "rangeBar",
         events: {
           dataPointSelection: (e, chart, opts) => {
@@ -118,28 +124,58 @@ export class VirtualTrucksChartComponent implements OnInit {
       plotOptions: {
         bar: {
           horizontal: true,
-          barHeight: "80%"
+          barHeight: "100%",
+          borderRadius: 1
         }
       },
       xaxis: {
-        type: "datetime"
+        type: "datetime",
+        labels: {
+          format: 'dd/MM',
+        }
       },
       fill: {
         type: "gradient",
         gradient: {
           shade: "light",
-          type: "vertical",
-          shadeIntensity: 0.25,
+          type: "horizontal",
+          shadeIntensity: 0.5,
           gradientToColors: undefined,
           inverseColors: true,
           opacityFrom: 1,
           opacityTo: 1,
-          stops: [50, 0, 100, 100]
+          stops: [0, 50, 100]
         }
       },
       legend: {
-        position: "top",
-        horizontalAlign: "left"
+        position: "left",
+        horizontalAlign: "center",
+        itemMargin: {
+          vertical: 5.5
+        }
+      },
+      grid: {
+        show: true,
+        position: 'front',
+        xaxis: {
+          lines: {
+              show: true
+          }
+        }, 
+      },
+      annotation: {
+        xaxis: [
+          {
+            x: new Date().getTime(),
+            borderColor: '#775DD0',
+            label: {
+              style: {
+                color: '#fff',
+              },
+              text: 'Dupa'
+            }
+          }
+        ]
       }
     };
 
