@@ -9,6 +9,7 @@ import { DividerComponent } from './divider/divider.component';
 import { VirtualTrucksComponent } from './virtual-trucks/virtual-trucks.component';
 import { ProductionPlanByCountryComponent } from './production-plan-by-country/production-plan-by-country.component';
 import { VirtualTrucksChartComponent } from './virtual-trucks-chart/virtual-trucks-chart.component';
+import { MediaPlayerComponent } from './media-player/media-player.component';
 
 const routes: Routes = [
   { path: '', component: ModPickerComponent},
@@ -19,6 +20,7 @@ const routes: Routes = [
   { path: 'trucks', component: VirtualTrucksComponent},
   { path: 'truckschart', component: VirtualTrucksChartComponent},
   { path: 'planbylocation', component: ProductionPlanByCountryComponent},
+  { path: 'mediaplayer/:name', component: MediaPlayerComponent},
   { 
     path: 'linePerformance', 
     component: LinePerformanceComponent,

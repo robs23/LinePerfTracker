@@ -24,9 +24,14 @@ import { ProductionPlanByCountryComponent } from './production-plan-by-country/p
 import { NgApexchartsModule } from 'node_modules/ng-apexcharts';
 import { VirtualTrucksChartComponent } from './virtual-trucks-chart/virtual-trucks-chart.component';
 import { VirtualTruckItemsComponent } from './virtual-truck-items/virtual-truck-items.component';
+import { MediaPlayerComponent } from './media-player/media-player.component';
+import { VgCoreModule } from '@videogular/ngx-videogular/core';
+import {VgControlsModule} from '@videogular/ngx-videogular/controls';
+import {VgOverlayPlayModule} from '@videogular/ngx-videogular/overlay-play';
+import {VgBufferingModule} from '@videogular/ngx-videogular/buffering';
 
 @NgModule({
-   declarations: [											
+   declarations: [												
       AppComponent,
       MachinesComponent,
       LinePerformanceComponent,
@@ -42,7 +47,8 @@ import { VirtualTruckItemsComponent } from './virtual-truck-items/virtual-truck-
       VirtualTrucksComponent,
       ProductionPlanByCountryComponent,
       VirtualTrucksChartComponent,
-      VirtualTruckItemsComponent
+      VirtualTruckItemsComponent,
+      MediaPlayerComponent
    ],
    imports: [
       BrowserModule,
@@ -51,7 +57,11 @@ import { VirtualTruckItemsComponent } from './virtual-truck-items/virtual-truck-
       MaterialModule,
       FormsModule,
       HttpClientModule,
-      NgApexchartsModule
+      NgApexchartsModule,
+      VgCoreModule,
+      VgControlsModule,
+      VgOverlayPlayModule,
+      VgBufferingModule
    ],
    providers: [ Settings, SpinnerService ],
    bootstrap: [
