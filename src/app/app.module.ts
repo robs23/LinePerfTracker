@@ -29,9 +29,10 @@ import { VgCoreModule } from '@videogular/ngx-videogular/core';
 import {VgControlsModule} from '@videogular/ngx-videogular/controls';
 import {VgOverlayPlayModule} from '@videogular/ngx-videogular/overlay-play';
 import {VgBufferingModule} from '@videogular/ngx-videogular/buffering';
+import { PlannedComponentsGridComponent } from './planned-components-grid/planned-components-grid.component';
 
 @NgModule({
-   declarations: [												
+   declarations: [													
       AppComponent,
       MachinesComponent,
       LinePerformanceComponent,
@@ -48,7 +49,8 @@ import {VgBufferingModule} from '@videogular/ngx-videogular/buffering';
       ProductionPlanByCountryComponent,
       VirtualTrucksChartComponent,
       VirtualTruckItemsComponent,
-      MediaPlayerComponent
+      MediaPlayerComponent,
+      PlannedComponentsGridComponent
    ],
    imports: [
       BrowserModule,

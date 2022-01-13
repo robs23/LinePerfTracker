@@ -10,6 +10,7 @@ import { VirtualTrucksComponent } from './virtual-trucks/virtual-trucks.componen
 import { ProductionPlanByCountryComponent } from './production-plan-by-country/production-plan-by-country.component';
 import { VirtualTrucksChartComponent } from './virtual-trucks-chart/virtual-trucks-chart.component';
 import { MediaPlayerComponent } from './media-player/media-player.component';
+import { PlannedComponentsGridComponent } from './planned-components-grid/planned-components-grid.component';
 
 const routes: Routes = [
   { path: '', component: ModPickerComponent},
@@ -21,6 +22,7 @@ const routes: Routes = [
   { path: 'truckschart', component: VirtualTrucksChartComponent},
   { path: 'planbylocation', component: ProductionPlanByCountryComponent},
   { path: 'mediaplayer/:name', component: MediaPlayerComponent},
+  { path: 'plannedcomponents', component: PlannedComponentsGridComponent},
   { 
     path: 'linePerformance', 
     component: LinePerformanceComponent,

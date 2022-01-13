@@ -1,0 +1,21 @@
+export interface PlannedComponent {
+        OPERATION_DATE: string,
+        OPERATION_DAY: string,
+        OPERATION_WEEK: number,  
+        OPERATION_YEAR: number,
+        SHIFT_ID: number,
+        SHIFT_NAME: string,
+        MACHINE_NR: string,
+        OPERATION_NR: string,
+        OPERATION_TYPE_NAME: string,
+	    ORDER_NR: string,
+        PRODUCT_NR: string,
+        PRODUCT_NAME: string,
+        PROD_TYPE: string,
+        SUB_PROD_TYPE: string,
+        ORDER_TYPE_CODE: string,
+        ORDER_TYPE_NAME: string,
+        BOM_NR: string,
+        PRODUCT_QUANTITY: number,
+        PRODUCT_QUANTITY_ALL: number
+}
