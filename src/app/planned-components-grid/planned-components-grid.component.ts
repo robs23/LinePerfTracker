@@ -2,8 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { PlannedComponent } from '../interfaces/planned-component';
 import { PlannedComponentsService } from '../services/planned-components.service';
 import { ActivatedRoute, Params } from '@angular/router';
-import { ColDef } from 'ag-grid-community';
+import { ColDef, GridOptions } from 'ag-grid-community';
 import { Observable } from 'rxjs';
+import { count } from 'rxjs/operators';
 
 @Component({
   selector: 'app-planned-components-grid',
@@ -11,10 +12,48 @@ import { Observable } from 'rxjs';
   styleUrls: ['./planned-components-grid.component.css']
 })
 export class PlannedComponentsGridComponent implements OnInit {
-  PlannedComponents: Observable<any[]>;
+  PlannedComponents: PlannedComponent[];
   colDefs: ColDef[];
+  gridOptions: GridOptions;
 
   constructor(private componentService: PlannedComponentsService, private params: ActivatedRoute) {
+    
+    this.gridOptions = <GridOptions>{};
+    // this.gridOptions = {
+    //   onGridReady: () => {
+    //     this.gridOptions.api.setRowData(this.PlannedComponents);
+    //   },
+    //   onGridSizeChanged: () => {
+    //     this.gridOptions.api.sizeColumnsToFit();
+    //   }
+    // };
+    // this.gridOptions.columnDefs = this.colDefs;
+   }
+
+  ngOnInit() {
+    this.setHeaders();
+    let query: string = '';
+    this.params.queryParams.subscribe(params => {
+      query = params['query'];
+    })
+    if(query == undefined){
+      this.getPlannedComponents();
+    }else{
+      this.getPlannedComponents(query);
+    }
+  }
+
+
+  getPlannedComponents(query?: string): void{
+    this.componentService.getPlannedComponents(query).subscribe(response => 
+      { 
+        this.PlannedComponents = response;
+        this.gridOptions.api.setRowData(this.PlannedComponents);
+        this.gridOptions.columnDefs = this.colDefs;
+      });
+  }
+
+  setHeaders(){
     this.colDefs = [
       { 
         headerName: 'Czas',
@@ -93,25 +132,8 @@ export class PlannedComponentsGridComponent implements OnInit {
         field: 'PRODUCT_QUANTITY_ALL'
       }
     ]
-   }
-
-  ngOnInit() {
-    let query: string = '';
-    this.params.queryParams.subscribe(params => {
-      query = params['query'];
-    })
-    if(query == undefined){
-      this.getPlannedComponents();
-    }else{
-      this.getPlannedComponents(query);
-    }
   }
 
-  getPlannedComponents(query?: string): void{
-    this.componentService.getPlannedComponents(query).subscribe(response => 
-      { 
-        this.PlannedComponents = response;
-      });
-  }
+  
 
 }
