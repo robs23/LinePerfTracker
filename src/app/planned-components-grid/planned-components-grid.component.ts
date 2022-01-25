@@ -5,6 +5,7 @@ import { ActivatedRoute, Params } from '@angular/router';
 import { ColDef, GridOptions } from 'ag-grid-community';
 import { Observable } from 'rxjs';
 import { count } from 'rxjs/operators';
+import { localePl } from '../../assets/locale.pl.js';
 
 @Component({
   selector: 'app-planned-components-grid',
@@ -14,23 +15,14 @@ import { count } from 'rxjs/operators';
 export class PlannedComponentsGridComponent implements OnInit {
   PlannedComponents: PlannedComponent[];
   colDefs: ColDef[];
-  gridOptions: GridOptions;
+  private gridOptions = {};
 
   constructor(private componentService: PlannedComponentsService, private params: ActivatedRoute) {
-    
-    this.gridOptions = <GridOptions>{};
-    // this.gridOptions = {
-    //   onGridReady: () => {
-    //     this.gridOptions.api.setRowData(this.PlannedComponents);
-    //   },
-    //   onGridSizeChanged: () => {
-    //     this.gridOptions.api.sizeColumnsToFit();
-    //   }
-    // };
-    // this.gridOptions.columnDefs = this.colDefs;
+
    }
 
   ngOnInit() {
+    this.setGridLocalization()
     this.setHeaders();
     let query: string = '';
     this.params.queryParams.subscribe(params => {
@@ -43,13 +35,18 @@ export class PlannedComponentsGridComponent implements OnInit {
     }
   }
 
+  setGridLocalization(){
+    this.gridOptions = {
+      localeTextFunc: (key: string, defaultValue: string) =>  localePl[key] || defaultValue
+    }
+  }
+
 
   getPlannedComponents(query?: string): void{
+    //this.gridOptions.api.showLoadingOverlay();
     this.componentService.getPlannedComponents(query).subscribe(response => 
       { 
         this.PlannedComponents = response;
-        this.gridOptions.api.setRowData(this.PlannedComponents);
-        this.gridOptions.columnDefs = this.colDefs;
       });
   }
 
@@ -57,79 +54,117 @@ export class PlannedComponentsGridComponent implements OnInit {
     this.colDefs = [
       { 
         headerName: 'Czas',
-        field: 'OPERATION_DATE'
+        field: 'OPERATION_DATE',
+        sortable: true,
+        filter: true
       },
       {
         headerName: 'Data',
-        field: 'OPERATION_DAY'
+        field: 'OPERATION_DAY',
+        sortable: true,
+        filter: true
       },
       {
         headerName: 'Tydzień',
-        field: 'OPERATION_WEEK'
+        field: 'OPERATION_WEEK',
+        sortable: true,
+        filter: true
       },
       {
         headerName: 'Rok',
-        field: 'OPERATION_YEAR'
+        field: 'OPERATION_YEAR',
+        sortable: true,
+        filter: true
       },
       { 
         headerName: 'Nr zmiany',
-        field: 'SHIFT_ID'
+        field: 'SHIFT_ID',
+        sortable: true,
+        filter: true
       },
       {
         headerName: 'Zmiana',
-        field: 'SHIFT_NAME'
+        field: 'SHIFT_NAME',
+        sortable: true,
+        filter: true
       },
       {
         headerName: 'Maszyna',
-        field: 'MACHINE_NR'
+        field: 'MACHINE_NR',
+        sortable: true,
+        filter: true
       },
       {
         headerName: 'Operacja',
-        field: 'OPERATION_NR'
+        field: 'OPERATION_NR',
+        sortable: true,
+        filter: true
       },
       { 
         headerName: 'Obszar',
-        field: 'OPERATION_TYPE_NAME'
+        field: 'OPERATION_TYPE_NAME',
+        sortable: true,
+        filter: true
       },
       {
         headerName: 'Zlecenie',
-        field: 'ORDER_NR'
+        field: 'ORDER_NR',
+        sortable: true,
+        filter: true
       },
       {
         headerName: 'Index',
-        field: 'PRODUCT_NR'
+        field: 'PRODUCT_NR',
+        sortable: true,
+        filter: true
       },
       {
         headerName: 'Nazwa',
-        field: 'PRODUCT_NAME'
+        field: 'PRODUCT_NAME',
+        sortable: true,
+        filter: true
       },
       { 
         headerName: 'Grupa',
-        field: 'PROD_TYPE'
+        field: 'PROD_TYPE',
+        sortable: true,
+        filter: true
       },
       {
         headerName: 'Typ',
-        field: 'SUB_PROD_TYPE'
+        field: 'SUB_PROD_TYPE',
+        sortable: true,
+        filter: true
       },
       {
         headerName: 'Kod',
-        field: 'ORDER_TYPE_CODE'
+        field: 'ORDER_TYPE_CODE',
+        sortable: true,
+        filter: true
       },
       {
         headerName: 'Kod2',
-        field: 'ORDER_TYPE_NAME'
+        field: 'ORDER_TYPE_NAME',
+        sortable: true,
+        filter: true
       },
       {
         headerName: 'BOM',
-        field: 'BOM_NR'
+        field: 'BOM_NR',
+        sortable: true,
+        filter: true
       },
       {
         headerName: 'Ilość [szt.]',
-        field: 'PRODUCT_QUANTITY'
+        field: 'PRODUCT_QUANTITY',
+        sortable: true,
+        filter: true
       },
       {
         headerName: 'Ilość w operacji [szt.]',
-        field: 'PRODUCT_QUANTITY_ALL'
+        field: 'PRODUCT_QUANTITY_ALL',
+        sortable: true,
+        filter: true
       }
     ]
   }

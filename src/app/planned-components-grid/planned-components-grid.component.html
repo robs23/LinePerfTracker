@@ -1,4 +1,22 @@
-<ag-grid-angular 
-  style="width: 800px; height: 800px;"
-  [gridOptions]="gridOptions">
-</ag-grid-angular>
+<div *ngIf="PlannedComponents!=undefined"> 
+    <div style="width: 800px; height: 800px" class="ag-theme-balham">
+      <ag-grid-angular 
+      style="width: 1200px; height: 800px"
+      class="ag-theme-balham"
+      [rowData]="PlannedComponents"
+      [columnDefs]="colDefs"
+      [gridOptions]="gridOptions">
+      </ag-grid-angular>
+    </div>
+</div>
+
+<div>
+  <div *ngIf="PlannedComponents!=undefined"> 
+    <div *ngIf="PlannedComponents.length > 0">
+
+    </div>
+    <div class="no-records" *ngIf="PlannedComponents.length === 0">
+      Brak danych
+    </div>
+  </div>
+</div>

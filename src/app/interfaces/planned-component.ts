@@ -8,7 +8,7 @@ export interface PlannedComponent {
         MACHINE_NR: string,
         OPERATION_NR: string,
         OPERATION_TYPE_NAME: string,
-	    ORDER_NR: string,
+	ORDER_NR: string,
         PRODUCT_NR: string,
         PRODUCT_NAME: string,
         PROD_TYPE: string,
