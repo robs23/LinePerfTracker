@@ -15,14 +15,14 @@ import { localePl } from '../../assets/locale.pl.js';
 export class PlannedComponentsGridComponent implements OnInit {
   PlannedComponents: PlannedComponent[];
   colDefs: ColDef[];
-  private gridOptions = {};
+  private gridOptions: GridOptions;
 
   constructor(private componentService: PlannedComponentsService, private params: ActivatedRoute) {
 
    }
 
   ngOnInit() {
-    this.setGridLocalization()
+    this.setGridOptions()
     this.setHeaders();
     let query: string = '';
     this.params.queryParams.subscribe(params => {
@@ -35,9 +35,15 @@ export class PlannedComponentsGridComponent implements OnInit {
     }
   }
 
-  setGridLocalization(){
+  onGridReady(params){
+    this.gridOptions.columnApi.autoSizeAllColumns(true);
+  }
+
+  setGridOptions(){
     this.gridOptions = {
-      localeTextFunc: (key: string, defaultValue: string) =>  localePl[key] || defaultValue
+      localeTextFunc: (key: string, defaultValue: string) =>  localePl[key] || defaultValue,
+      enableCellTextSelection: true,
+      rowSelection: 'multiple'
     }
   }
 
@@ -56,115 +62,136 @@ export class PlannedComponentsGridComponent implements OnInit {
         headerName: 'Czas',
         field: 'OPERATION_DATE',
         sortable: true,
-        filter: true
+        filter: true,
+        resizable: true
       },
       {
         headerName: 'Data',
         field: 'OPERATION_DAY',
         sortable: true,
-        filter: true
+        filter: true,
+        resizable: true
       },
       {
         headerName: 'Tydzień',
         field: 'OPERATION_WEEK',
         sortable: true,
-        filter: true
+        filter: true,
+        resizable: true
       },
       {
         headerName: 'Rok',
         field: 'OPERATION_YEAR',
         sortable: true,
-        filter: true
+        filter: true,
+        resizable: true
       },
       { 
         headerName: 'Nr zmiany',
         field: 'SHIFT_ID',
         sortable: true,
-        filter: true
+        filter: true,
+        resizable: true
       },
       {
         headerName: 'Zmiana',
         field: 'SHIFT_NAME',
         sortable: true,
-        filter: true
+        filter: true,
+        resizable: true
       },
       {
         headerName: 'Maszyna',
         field: 'MACHINE_NR',
         sortable: true,
-        filter: true
+        filter: true,
+        resizable: true
       },
       {
         headerName: 'Operacja',
         field: 'OPERATION_NR',
         sortable: true,
-        filter: true
+        filter: true,
+        resizable: true
       },
       { 
         headerName: 'Obszar',
         field: 'OPERATION_TYPE_NAME',
         sortable: true,
-        filter: true
+        filter: true,
+        resizable: true
       },
       {
         headerName: 'Zlecenie',
         field: 'ORDER_NR',
         sortable: true,
-        filter: true
+        filter: true,
+        resizable: true
       },
       {
         headerName: 'Index',
         field: 'PRODUCT_NR',
         sortable: true,
-        filter: true
+        filter: true,
+        pinned: 'left',
+        resizable: true
       },
       {
         headerName: 'Nazwa',
         field: 'PRODUCT_NAME',
         sortable: true,
-        filter: true
+        filter: true,
+        pinned: 'left',
+        resizable: true
       },
       { 
         headerName: 'Grupa',
         field: 'PROD_TYPE',
         sortable: true,
-        filter: true
+        filter: true,
+        resizable: true
       },
       {
         headerName: 'Typ',
         field: 'SUB_PROD_TYPE',
         sortable: true,
-        filter: true
+        filter: true,
+        resizable: true
       },
       {
         headerName: 'Kod',
         field: 'ORDER_TYPE_CODE',
         sortable: true,
-        filter: true
+        filter: true,
+        resizable: true
       },
       {
         headerName: 'Kod2',
         field: 'ORDER_TYPE_NAME',
         sortable: true,
-        filter: true
+        filter: true,
+        resizable: true
       },
       {
         headerName: 'BOM',
         field: 'BOM_NR',
         sortable: true,
-        filter: true
+        filter: true,
+        resizable: true
       },
       {
         headerName: 'Ilość [szt.]',
         field: 'PRODUCT_QUANTITY',
         sortable: true,
-        filter: true
+        filter: true,
+        resizable: true
       },
       {
         headerName: 'Ilość w operacji [szt.]',
         field: 'PRODUCT_QUANTITY_ALL',
         sortable: true,
-        filter: true
+        filter: true,
+        resizable: true
       }
     ]
   }

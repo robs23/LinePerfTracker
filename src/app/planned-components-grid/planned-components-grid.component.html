@@ -5,7 +5,8 @@
       class="ag-theme-balham"
       [rowData]="PlannedComponents"
       [columnDefs]="colDefs"
-      [gridOptions]="gridOptions">
+      [gridOptions]="gridOptions"
+      (gridReady)="onGridReady($event)">
       </ag-grid-angular>
     </div>
 </div>
