@@ -6,6 +6,8 @@ import { ColDef, GridOptions } from 'ag-grid-community';
 import { Observable } from 'rxjs';
 import { count } from 'rxjs/operators';
 import { localePl } from '../../assets/locale.pl.js';
+import { InventorySnapshot } from '../interfaces/inventory-snapshot';
+import { DeliveryItem } from '../interfaces/delivery-item';
 
 @Component({
   selector: 'app-planned-components-grid',
@@ -14,6 +16,8 @@ import { localePl } from '../../assets/locale.pl.js';
 })
 export class PlannedComponentsGridComponent implements OnInit {
   PlannedComponents: PlannedComponent[];
+  InventorySnapshots: InventorySnapshot[];
+  DeliveryItems: DeliveryItem[];
   colDefs: ColDef[];
   private gridOptions: GridOptions;
 
@@ -54,6 +58,13 @@ export class PlannedComponentsGridComponent implements OnInit {
       { 
         this.PlannedComponents = response;
       });
+  }
+
+  getInventorySnapshots(query?: string): void{
+    this.componentService.getInventorySnapshots(query).subscribe(response => 
+      {
+        
+      })
   }
 
   setHeaders(){
