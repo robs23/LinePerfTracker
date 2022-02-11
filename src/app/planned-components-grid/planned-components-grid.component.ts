@@ -4,10 +4,11 @@ import { PlannedComponentsService } from '../services/planned-components.service
 import { ActivatedRoute, Params } from '@angular/router';
 import { ColDef, GridOptions } from 'ag-grid-community';
 import { Observable } from 'rxjs';
-import { count } from 'rxjs/operators';
+import { count, first } from 'rxjs/operators';
 import { localePl } from '../../assets/locale.pl.js';
 import { InventorySnapshot } from '../interfaces/inventory-snapshot';
 import { DeliveryItem } from '../interfaces/delivery-item';
+import { FunctionsService } from '../services/functions.service';
 
 @Component({
   selector: 'app-planned-components-grid',
@@ -21,7 +22,7 @@ export class PlannedComponentsGridComponent implements OnInit {
   colDefs: ColDef[];
   private gridOptions: GridOptions;
 
-  constructor(private componentService: PlannedComponentsService, private params: ActivatedRoute) {
+  constructor(private componentService: PlannedComponentsService, private functionsService: FunctionsService, private params: ActivatedRoute) {
 
    }
 
@@ -33,9 +34,9 @@ export class PlannedComponentsGridComponent implements OnInit {
       query = params['query'];
     })
     if(query == undefined){
-      this.getPlannedComponents();
+      this.getInventorySnapshots();
     }else{
-      this.getPlannedComponents(query);
+      this.getInventorySnapshots(query);
     }
   }
 
@@ -63,9 +64,26 @@ export class PlannedComponentsGridComponent implements OnInit {
   getInventorySnapshots(query?: string): void{
     this.componentService.getInventorySnapshots(query).subscribe(response => 
       {
-        
+        this.InventorySnapshots = response;
+        let firstDateString: string;
+        let lastDateString: string;
+
+        if(this.InventorySnapshots.length > 0){
+          firstDateString = this.InventorySnapshots[0].TakenOn;
+        }else{
+          const now = new Date(Date.now());
+          firstDateString = now.toISOString();
+        }
+        var firstDate = new Date(firstDateString);
+        firstDateString = this.functionsService.formatDate(firstDate);
+        var lastDate = this.functionsService.addDays(firstDate, 7);
+        lastDateString = this.functionsService.formatDate(lastDate);
+        const qry = `OPERATION_DATE >= '${firstDateString}' AND OPERATION_DATE < '${lastDateString}'`;
+        this.getPlannedComponents(qry);
       })
   }
+
+
 
   setHeaders(){
     this.colDefs = [
