@@ -9,6 +9,7 @@ import { localePl } from '../../assets/locale.pl.js';
 import { InventorySnapshot } from '../interfaces/inventory-snapshot';
 import { DeliveryItem } from '../interfaces/delivery-item';
 import { FunctionsService } from '../services/functions.service';
+import * as extensions from '../extensions';
 
 @Component({
   selector: 'app-planned-components-grid',
@@ -22,7 +23,7 @@ export class PlannedComponentsGridComponent implements OnInit {
   colDefs: ColDef[];
   private gridOptions: GridOptions;
 
-  constructor(private componentService: PlannedComponentsService, private functionsService: FunctionsService, private params: ActivatedRoute) {
+  constructor(private componentService: PlannedComponentsService, private params: ActivatedRoute) {
 
    }
 
@@ -75,9 +76,9 @@ export class PlannedComponentsGridComponent implements OnInit {
           firstDateString = now.toISOString();
         }
         var firstDate = new Date(firstDateString);
-        firstDateString = this.functionsService.formatDate(firstDate);
-        var lastDate = this.functionsService.addDays(firstDate, 7);
-        lastDateString = this.functionsService.formatDate(lastDate);
+        firstDateString = firstDate.formatString();
+        var lastDate = firstDate.addDays(7);
+        lastDateString = lastDate.formatString();
         const qry = `OPERATION_DATE >= '${firstDateString}' AND OPERATION_DATE < '${lastDateString}'`;
         this.getPlannedComponents(qry);
       })
