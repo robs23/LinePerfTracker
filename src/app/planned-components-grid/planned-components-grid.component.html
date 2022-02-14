@@ -1,9 +1,9 @@
-<div *ngIf="PlannedComponents!=undefined"> 
+<div *ngIf="PlannedComponentsSchedule!=undefined"> 
     <div style="width: 800px; height: 800px" class="ag-theme-balham">
       <ag-grid-angular 
       style="width: 1200px; height: 800px"
       class="ag-theme-balham"
-      [rowData]="PlannedComponents"
+      [rowData]="PlannedComponentsSchedule"
       [columnDefs]="colDefs"
       [gridOptions]="gridOptions"
       (gridReady)="onGridReady($event)">
@@ -12,11 +12,11 @@
 </div>
 
 <div>
-  <div *ngIf="PlannedComponents!=undefined"> 
-    <div *ngIf="PlannedComponents.length > 0">
+  <div *ngIf="PlannedComponentsSchedule!=undefined"> 
+    <div *ngIf="PlannedComponentsSchedule.length > 0">
 
     </div>
-    <div class="no-records" *ngIf="PlannedComponents.length === 0">
+    <div class="no-records" *ngIf="PlannedComponentsSchedule.length === 0">
       Brak danych
     </div>
   </div>

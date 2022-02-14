@@ -1,44 +1,58 @@
-import { Component, OnInit } from '@angular/core';
-import { PlannedComponent } from '../interfaces/planned-component';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { PlannedComponentsService } from '../services/planned-components.service';
 import { ActivatedRoute, Params } from '@angular/router';
 import { ColDef, GridOptions } from 'ag-grid-community';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
+import { UserInteractionService } from '../services/userInteraction.service';
+import { forkJoin } from 'rxjs';
 import { count, first } from 'rxjs/operators';
 import { localePl } from '../../assets/locale.pl.js';
 import { InventorySnapshot } from '../interfaces/inventory-snapshot';
 import { DeliveryItem } from '../interfaces/delivery-item';
 import { FunctionsService } from '../services/functions.service';
-import * as extensions from '../extensions';
+import { SpinnerService  } from '../services/spinner.service';
+import '../extensions';
+import * as XLSX from 'xlsx'; 
+import { elementEventFullName } from '@angular/compiler/src/view_compiler/view_compiler';
 
 @Component({
   selector: 'app-planned-components-grid',
   templateUrl: './planned-components-grid.component.html',
   styleUrls: ['./planned-components-grid.component.css']
 })
-export class PlannedComponentsGridComponent implements OnInit {
-  PlannedComponents: PlannedComponent[];
+export class PlannedComponentsGridComponent implements OnInit, OnDestroy {
   InventorySnapshots: InventorySnapshot[];
   DeliveryItems: DeliveryItem[];
+  PlannedComponentsSchedule: any[];
   colDefs: ColDef[];
+  exportButtonClickedSub: Subscription;
   private gridOptions: GridOptions;
 
-  constructor(private componentService: PlannedComponentsService, private params: ActivatedRoute) {
-
+  constructor(private componentService: PlannedComponentsService, private params: ActivatedRoute, private spinnerService: SpinnerService, private userInteractionService: UserInteractionService) {
+    this.exportButtonClickedSub = userInteractionService.exportClicked$.subscribe(
+      value => {
+        //this.exportToExcel();
+        this.jasonToExcel();
+      }
+    )
    }
 
   ngOnInit() {
     this.setGridOptions()
-    this.setHeaders();
+    //this.setHeaders();
     let query: string = '';
     this.params.queryParams.subscribe(params => {
       query = params['query'];
     })
     if(query == undefined){
-      this.getInventorySnapshots();
+      this.getData();
     }else{
-      this.getInventorySnapshots(query);
+      this.getData(query);
     }
+  }
+
+  ngOnDestroy(): void{
+    this.exportButtonClickedSub.unsubscribe();
   }
 
   onGridReady(params){
@@ -53,18 +67,10 @@ export class PlannedComponentsGridComponent implements OnInit {
     }
   }
 
-
-  getPlannedComponents(query?: string): void{
-    //this.gridOptions.api.showLoadingOverlay();
-    this.componentService.getPlannedComponents(query).subscribe(response => 
-      { 
-        this.PlannedComponents = response;
-      });
-  }
-
-  getInventorySnapshots(query?: string): void{
+  getData(query?: string): void{
     this.componentService.getInventorySnapshots(query).subscribe(response => 
       {
+        var spinnerRef = this.spinnerService.start();
         this.InventorySnapshots = response;
         let firstDateString: string;
         let lastDateString: string;
@@ -76,156 +82,102 @@ export class PlannedComponentsGridComponent implements OnInit {
           firstDateString = now.toISOString();
         }
         var firstDate = new Date(firstDateString);
+        var today = new Date();
+        var lastDate = today.addDays(7);
         firstDateString = firstDate.formatString();
-        var lastDate = firstDate.addDays(7);
         lastDateString = lastDate.formatString();
         const qry = `OPERATION_DATE >= '${firstDateString}' AND OPERATION_DATE < '${lastDateString}'`;
-        this.getPlannedComponents(qry);
+        this.componentService.getComponentsScheduleAndDeliveries(qry).subscribe(responseList => {
+          this.PlannedComponentsSchedule = responseList[0];
+          this.DeliveryItems = responseList[1];
+          this.addInventoryColumn();
+          this.setDynamicHeaders();
+          this.spinnerService.stop(spinnerRef);
+        });
       })
   }
 
-
-
-  setHeaders(){
-    this.colDefs = [
-      { 
-        headerName: 'Czas',
-        field: 'OPERATION_DATE',
-        sortable: true,
-        filter: true,
-        resizable: true
-      },
-      {
-        headerName: 'Data',
-        field: 'OPERATION_DAY',
-        sortable: true,
-        filter: true,
-        resizable: true
-      },
-      {
-        headerName: 'Tydzień',
-        field: 'OPERATION_WEEK',
-        sortable: true,
-        filter: true,
-        resizable: true
-      },
-      {
-        headerName: 'Rok',
-        field: 'OPERATION_YEAR',
-        sortable: true,
-        filter: true,
-        resizable: true
-      },
-      { 
-        headerName: 'Nr zmiany',
-        field: 'SHIFT_ID',
-        sortable: true,
-        filter: true,
-        resizable: true
-      },
-      {
-        headerName: 'Zmiana',
-        field: 'SHIFT_NAME',
-        sortable: true,
-        filter: true,
-        resizable: true
-      },
-      {
-        headerName: 'Maszyna',
-        field: 'MACHINE_NR',
-        sortable: true,
-        filter: true,
-        resizable: true
-      },
-      {
-        headerName: 'Operacja',
-        field: 'OPERATION_NR',
-        sortable: true,
-        filter: true,
-        resizable: true
-      },
-      { 
-        headerName: 'Obszar',
-        field: 'OPERATION_TYPE_NAME',
-        sortable: true,
-        filter: true,
-        resizable: true
-      },
-      {
-        headerName: 'Zlecenie',
-        field: 'ORDER_NR',
-        sortable: true,
-        filter: true,
-        resizable: true
-      },
-      {
-        headerName: 'Index',
-        field: 'PRODUCT_NR',
-        sortable: true,
-        filter: true,
-        pinned: 'left',
-        resizable: true
-      },
-      {
-        headerName: 'Nazwa',
-        field: 'PRODUCT_NAME',
-        sortable: true,
-        filter: true,
-        pinned: 'left',
-        resizable: true
-      },
-      { 
-        headerName: 'Grupa',
-        field: 'PROD_TYPE',
-        sortable: true,
-        filter: true,
-        resizable: true
-      },
-      {
-        headerName: 'Typ',
-        field: 'SUB_PROD_TYPE',
-        sortable: true,
-        filter: true,
-        resizable: true
-      },
-      {
-        headerName: 'Kod',
-        field: 'ORDER_TYPE_CODE',
-        sortable: true,
-        filter: true,
-        resizable: true
-      },
-      {
-        headerName: 'Kod2',
-        field: 'ORDER_TYPE_NAME',
-        sortable: true,
-        filter: true,
-        resizable: true
-      },
-      {
-        headerName: 'BOM',
-        field: 'BOM_NR',
-        sortable: true,
-        filter: true,
-        resizable: true
-      },
-      {
-        headerName: 'Ilość [szt.]',
-        field: 'PRODUCT_QUANTITY',
-        sortable: true,
-        filter: true,
-        resizable: true
-      },
-      {
-        headerName: 'Ilość w operacji [szt.]',
-        field: 'PRODUCT_QUANTITY_ALL',
-        sortable: true,
-        filter: true,
-        resizable: true
+  addInventoryColumn(): void{
+    this.PlannedComponentsSchedule.forEach(function(element){
+      let ind = element.Produkt;
+      let x = this.InventorySnapshots.length;
+      let stock = this.InventorySnapshots.find(f=>f.ProductIndex == ind && f.Status == "U")?.Size;
+      if(stock == undefined){
+        stock = 0;
       }
-    ]
+      element.Zapas = stock;
+    });
   }
 
-  
+  // addInventoryColumn(): void{
+  //   for(let i = 0; i < this.PlannedComponentsSchedule.length; i++){
+  //     let ind = this.PlannedComponentsSchedule[i].Produkt;
+  //     let stock = this.InventorySnapshots.find(f=>f.ProductIndex == ind && f.Status == "U")?.Size;
+
+  //     if(stock == undefined){
+  //       stock = 0;
+  //     }
+  //     this.PlannedComponentsSchedule.map(obj => ({obj, Zapas: stock}));
+  //   }
+  // }
+
+
+  setDynamicHeaders(): void{
+    var p = this.PlannedComponentsSchedule[0];
+    this.colDefs = [];
+    for (var key in p) {
+      if (p.hasOwnProperty(key)) {
+        let hName = key;
+        let isPinned = true;
+
+        if(key.includes("__")){
+          let day = key.substring(8,10);
+          let month = key.substring(5,7);
+          let shift = key.substring(key.length-1,key.length);
+          switch(shift){
+            case '1':
+              shift = "I";
+              break;
+            case '2':
+              shift = "II";
+              break;
+            case '3':
+              shift = "III";
+              break;
+          }
+          isPinned = false;
+          hName = `${day}.${month} ${shift}`
+        }
+          
+          this.colDefs.push({
+            headerName: hName,
+            field: key,
+            sortable: true,
+            filter: true,
+            resizable: true,
+            pinned: isPinned
+          })
+          //console.log(key + " -> " + p[key]);
+      }
+  }
+  }
+
+  jasonToExcel(): void{
+    /* table id is passed over here */   
+    var spinnerRef = this.spinnerService.start();
+    let ws: XLSX.WorkSheet;
+      ws =XLSX.utils.json_to_sheet(this.PlannedComponentsSchedule);
+
+    /* generate workbook and add the worksheet */
+    const wb: XLSX.WorkBook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+
+    /* save to file */
+    XLSX.writeFile(wb, `plan_komponentów_${new Date().toLocaleDateString()}_${new Date().toLocaleTimeString()}.xlsx`);
+    setTimeout(() => {
+      this.spinnerService.stop(spinnerRef);
+    },2500);
+    
+  }  
 
 }

@@ -20,7 +20,7 @@ declare global {
    Date.prototype.formatString = function(): string{
     var date = new Date(this.valueOf());
     let datePart = date.toISOString().split('T')[0];
-    let timePart = date.toDateString().split('T')[1].substring(0,8);
-    return datePart;
+    let timePart = date.toISOString().split('T')[1].substring(0,8);
+    return datePart + " " + timePart;
    }
    export {}; 

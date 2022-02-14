@@ -1,0 +1,12 @@
+<mat-toolbar color="primary">
+  <mat-toolbar-row>
+    <button matTooltip="Eksportuj do Excela" class="btn" id="tabToExcel" mat-mini-fab color="accent" (click)="exportToExcel()">
+      <mat-icon>download</mat-icon>
+    </button>
+    <span class="title"><h1>Plan komponentów</h1></span>
+    <div class="navbar-brand">
+      <img id="logo" src="../linetracker/assets/JDE_CORP_MARK_RGB.png">
+    </div>
+  </mat-toolbar-row>
+</mat-toolbar>
+<app-planned-components-grid></app-planned-components-grid>
