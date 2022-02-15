@@ -26,6 +26,7 @@ export class PlannedComponentsGridComponent implements OnInit, OnDestroy {
   PlannedComponentsSchedule: any[];
   colDefs: ColDef[];
   exportButtonClickedSub: Subscription;
+  inventoryCoverageClickedSub: Subscription;
   private gridOptions: GridOptions;
 
   constructor(private componentService: PlannedComponentsService, private params: ActivatedRoute, private spinnerService: SpinnerService, private userInteractionService: UserInteractionService) {
@@ -34,7 +35,17 @@ export class PlannedComponentsGridComponent implements OnInit, OnDestroy {
         //this.exportToExcel();
         this.jasonToExcel();
       }
-    )
+    );
+    this.inventoryCoverageClickedSub = userInteractionService.coverageByInventoryClicked$.subscribe(
+      value => {
+        if(value){
+          // on
+          this.logData();
+        }else{
+          //off
+        }
+      }
+    );
    }
 
   ngOnInit() {
@@ -53,10 +64,11 @@ export class PlannedComponentsGridComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void{
     this.exportButtonClickedSub.unsubscribe();
+    this.inventoryCoverageClickedSub.unsubscribe();
   }
 
   onGridReady(params){
-    this.gridOptions.columnApi.autoSizeAllColumns(true);
+    //this.gridOptions.columnApi.autoSizeAllColumns(true);
   }
 
   setGridOptions(){
@@ -98,42 +110,49 @@ export class PlannedComponentsGridComponent implements OnInit, OnDestroy {
   }
 
   addInventoryColumn(): void{
-    this.PlannedComponentsSchedule.forEach(function(element){
-      let ind = element.Produkt;
-      let x = this.InventorySnapshots.length;
+    let newArray = [];
+    for(let i = 0; i < this.PlannedComponentsSchedule.length; i++){
+      let ind = this.PlannedComponentsSchedule[i].Produkt;
       let stock = this.InventorySnapshots.find(f=>f.ProductIndex == ind && f.Status == "U")?.Size;
+
       if(stock == undefined){
         stock = 0;
       }
-      element.Zapas = stock;
-    });
+      let element = this.PlannedComponentsSchedule[i].Zapas = stock;
+      //this.PlannedComponentsSchedule = this.PlannedComponentsSchedule.find(f=>f.Produkt == ind).map(obj => ({...obj, Zapas: stock}));
+    }
   }
-
-  // addInventoryColumn(): void{
-  //   for(let i = 0; i < this.PlannedComponentsSchedule.length; i++){
-  //     let ind = this.PlannedComponentsSchedule[i].Produkt;
-  //     let stock = this.InventorySnapshots.find(f=>f.ProductIndex == ind && f.Status == "U")?.Size;
-
-  //     if(stock == undefined){
-  //       stock = 0;
-  //     }
-  //     this.PlannedComponentsSchedule.map(obj => ({obj, Zapas: stock}));
-  //   }
-  // }
 
 
   setDynamicHeaders(): void{
     var p = this.PlannedComponentsSchedule[0];
     this.colDefs = [];
+    let today = new Date();
+    let currShift = today.getShift();
+
     for (var key in p) {
       if (p.hasOwnProperty(key)) {
         let hName = key;
         let isPinned = true;
+        let colStyle = {};
+        let colWidth = 90;
+        let colFilter = "agTextColumnFilter";
+
+        if(key == "Nazwa"){
+          colWidth = 180;
+        }else if(key == "Typ"){
+          colWidth = 140;
+        }else if(key == "Zapas"){
+          colFilter = "agNumberColumnFilter"
+        }
 
         if(key.includes("__")){
           let day = key.substring(8,10);
           let month = key.substring(5,7);
           let shift = key.substring(key.length-1,key.length);
+          if(Number(day) == today.getDate() && Number(month) == (today.getMonth()+1) && shift == currShift.toString()){
+            colStyle = {'background-color': '#cddc39'};
+          }
           switch(shift){
             case '1':
               shift = "I";
@@ -146,21 +165,35 @@ export class PlannedComponentsGridComponent implements OnInit, OnDestroy {
               break;
           }
           isPinned = false;
-          hName = `${day}.${month} ${shift}`
+          hName = `${day}.${month} ${shift}`;
+          colFilter = "agNumberColumnFilter";
         }
-          
+
           this.colDefs.push({
             headerName: hName,
             field: key,
+            colId: key,
             sortable: true,
-            filter: true,
+            filter: colFilter,
             resizable: true,
-            pinned: isPinned
+            pinned: isPinned,
+            cellStyle: colStyle,
+            width: colWidth
           })
-          //console.log(key + " -> " + p[key]);
       }
   }
   }
+
+  logData(): void{
+    this.gridOptions.api.forEachNode(function(node){
+      console.log("Values: ", node);
+    });
+  }
+
+  // cellStyle(params): object{
+  //   var stock = params.node.data.Zapas;
+
+  // }
 
   jasonToExcel(): void{
     /* table id is passed over here */   

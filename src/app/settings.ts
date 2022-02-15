@@ -5,4 +5,6 @@ import { Observable } from 'rxjs';
 export class Settings {
   AutoUpdate: boolean = true;
   TabSwitch: boolean = true;
+  PlanCoverageByInventory: boolean = false;
+  PlanCoverageByDeliveries: boolean = false;
 }

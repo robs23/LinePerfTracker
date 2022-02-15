@@ -10,13 +10,33 @@ import { UserInteractionService } from '../services/userInteraction.service';
 })
 export class ComponentsComponent implements OnInit {
 
-  constructor(private userInteractionService: UserInteractionService) { }
+  constructor(public settings: Settings, private userInteractionService: UserInteractionService) { }
 
   ngOnInit() {
   }
 
   exportToExcel(): void{
     this.userInteractionService.emitExportClicked(true);
+  }
+
+  toggleInventoryCoverage(): void{
+    if(this.settings.PlanCoverageByInventory){
+      this.settings.PlanCoverageByInventory = false;
+      this.userInteractionService.emitPlanCoverageByInventoryClicked(false);
+    }else{
+        this.settings.PlanCoverageByInventory = true;
+        this.userInteractionService.emitPlanCoverageByInventoryClicked(true);
+    }
+  }
+
+  toggleDeliveriesCoverage(): void{
+    if(this.settings.PlanCoverageByDeliveries){
+      this.settings.PlanCoverageByDeliveries = false;
+      this.userInteractionService.emitPlanCoverageByDeliveriesClicked(false);
+    }else{
+        this.settings.PlanCoverageByDeliveries = true;
+        this.userInteractionService.emitPlanCoverageByDeliveriesClicked(true);
+    }
   }
 
 }
