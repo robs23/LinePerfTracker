@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { PlannedComponentsService } from '../services/planned-components.service';
 import { ActivatedRoute, Params } from '@angular/router';
-import { ColDef, GridOptions } from 'ag-grid-community';
+import { CellStyle, CellStyleFunc, ColDef, GridOptions } from 'ag-grid-community';
 import { Observable, Subscription } from 'rxjs';
 import { UserInteractionService } from '../services/userInteraction.service';
 import { forkJoin } from 'rxjs';
@@ -28,6 +28,8 @@ export class PlannedComponentsGridComponent implements OnInit, OnDestroy {
   exportButtonClickedSub: Subscription;
   inventoryCoverageClickedSub: Subscription;
   private gridOptions: GridOptions;
+  styleCount: number = 0;
+  firstPlanDate: Date = new Date(2100, 0,1);
 
   constructor(private componentService: PlannedComponentsService, private params: ActivatedRoute, private spinnerService: SpinnerService, private userInteractionService: UserInteractionService) {
     this.exportButtonClickedSub = userInteractionService.exportClicked$.subscribe(
@@ -102,14 +104,15 @@ export class PlannedComponentsGridComponent implements OnInit, OnDestroy {
         this.componentService.getComponentsScheduleAndDeliveries(qry).subscribe(responseList => {
           this.PlannedComponentsSchedule = responseList[0];
           this.DeliveryItems = responseList[1];
-          this.addInventoryColumn();
+          this.setFirstPlanDate();
+          this.addInventoryAndCoverageEndColumns();
           this.setDynamicHeaders();
           this.spinnerService.stop(spinnerRef);
         });
       })
   }
 
-  addInventoryColumn(): void{
+  addInventoryAndCoverageEndColumns(): void{
     let newArray = [];
     for(let i = 0; i < this.PlannedComponentsSchedule.length; i++){
       let ind = this.PlannedComponentsSchedule[i].Produkt;
@@ -119,8 +122,45 @@ export class PlannedComponentsGridComponent implements OnInit, OnDestroy {
         stock = 0;
       }
       let element = this.PlannedComponentsSchedule[i].Zapas = stock;
-      //this.PlannedComponentsSchedule = this.PlannedComponentsSchedule.find(f=>f.Produkt == ind).map(obj => ({...obj, Zapas: stock}));
+
+      let currDate = this.calculateCoverageEnd(this.PlannedComponentsSchedule[i]);
+      this.PlannedComponentsSchedule[i].Pokrycie = currDate;
+
     }
+  }
+
+  setFirstPlanDate(): void{
+    var p = this.PlannedComponentsSchedule[0];
+    for(var key in p){
+      if(p.hasOwnProperty(key)){
+        if(key.includes("__")){
+          let day = key.substring(8,10);
+          let month = key.substring(5,7);
+          let year = key.substring(0,4);
+          let shift = key.substring(key.length-1,key.length);
+          let hour = 0;
+          switch(shift){
+            case '1':
+              hour = 6;
+              break;
+            case '2':
+              hour = 14;
+              break;
+            case '3':
+              hour = 22;
+              break;
+          }
+          let currDate = new Date(Number(year), Number(month)-1, Number(day), hour, 0, 0);
+          if(currDate < this.firstPlanDate){
+            this.firstPlanDate = currDate;
+          }
+        }
+      }
+    }
+  }
+
+  calculateCoverageEnd(item): Date{
+    return this.firstPlanDate;
   }
 
 
@@ -129,6 +169,7 @@ export class PlannedComponentsGridComponent implements OnInit, OnDestroy {
     this.colDefs = [];
     let today = new Date();
     let currShift = today.getShift();
+    
 
     for (var key in p) {
       if (p.hasOwnProperty(key)) {
@@ -137,19 +178,26 @@ export class PlannedComponentsGridComponent implements OnInit, OnDestroy {
         let colStyle = {};
         let colWidth = 90;
         let colFilter = "agTextColumnFilter";
+        let colType = "textColumn";
 
         if(key == "Nazwa"){
           colWidth = 180;
         }else if(key == "Typ"){
           colWidth = 140;
         }else if(key == "Zapas"){
-          colFilter = "agNumberColumnFilter"
+          colFilter = "agNumberColumnFilter";
+          colType = "numberColumn";
+        }else if(key == "Pokrycie"){
+          colFilter = "agDateColumnFilter";
+          colType = "dateColumn";
         }
 
         if(key.includes("__")){
+          colType = "numberColumn";
           let day = key.substring(8,10);
           let month = key.substring(5,7);
           let shift = key.substring(key.length-1,key.length);
+
           if(Number(day) == today.getDate() && Number(month) == (today.getMonth()+1) && shift == currShift.toString()){
             colStyle = {'background-color': '#cddc39'};
           }
@@ -164,6 +212,7 @@ export class PlannedComponentsGridComponent implements OnInit, OnDestroy {
               shift = "III";
               break;
           }
+
           isPinned = false;
           hName = `${day}.${month} ${shift}`;
           colFilter = "agNumberColumnFilter";
@@ -177,11 +226,13 @@ export class PlannedComponentsGridComponent implements OnInit, OnDestroy {
             filter: colFilter,
             resizable: true,
             pinned: isPinned,
-            cellStyle: colStyle,
-            width: colWidth
+            cellStyle: params => this.cellStyle(params, key),
+            width: colWidth,
+            type: colType
           })
       }
   }
+    console.log("StyleCount: ", this.styleCount);
   }
 
   logData(): void{
@@ -190,10 +241,20 @@ export class PlannedComponentsGridComponent implements OnInit, OnDestroy {
     });
   }
 
-  // cellStyle(params): object{
-  //   var stock = params.node.data.Zapas;
-
-  // }
+  cellStyle(params, id: string): CellStyle{
+    // var stock = params.node.data.Zapas;
+    if(this.styleCount <10){
+      console.log("Params => ", params);
+      console.log("id => ", id);
+      console.log("StyleCount: ", this.styleCount);
+    }
+    
+    this.styleCount++;
+    if(params.column.colId == "2022-02-10__3" && params.node.rowIndex == 5){
+      return {backgroundColor: '#c99c8d', color: 'black'};
+    }
+    return {color: 'black'};
+  }
 
   jasonToExcel(): void{
     /* table id is passed over here */   
