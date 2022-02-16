@@ -160,7 +160,38 @@ export class PlannedComponentsGridComponent implements OnInit, OnDestroy {
   }
 
   calculateCoverageEnd(item): Date{
-    return this.firstPlanDate;
+    let stock = item.Zapas;
+    let endDate = this.firstPlanDate;
+
+    for(let key in item){
+      if(key.includes("__")){
+        let plan = item[key];
+        stock = stock - plan;
+        let day = key.substring(8,10);
+        let month = key.substring(5,7);
+        let year = key.substring(0,4);
+        let shift = key.substring(key.length-1,key.length);
+        let hour = 0;
+        switch(shift){
+          case '1':
+            hour = 6;
+            break;
+          case '2':
+            hour = 14;
+            break;
+          case '3':
+            hour = 22;
+            break;
+        }
+        
+        if(stock <= 0){
+          //our coverage ends here
+          break;
+        }
+        endDate = new Date(Number(year), Number(month)-1, Number(day), hour, 0, 0);
+      }
+    }
+    return endDate;
   }
 
 
@@ -242,16 +273,29 @@ export class PlannedComponentsGridComponent implements OnInit, OnDestroy {
   }
 
   cellStyle(params, id: string): CellStyle{
-    // var stock = params.node.data.Zapas;
-    if(this.styleCount <10){
-      console.log("Params => ", params);
-      console.log("id => ", id);
-      console.log("StyleCount: ", this.styleCount);
-    }
-    
-    this.styleCount++;
-    if(params.column.colId == "2022-02-10__3" && params.node.rowIndex == 5){
-      return {backgroundColor: '#c99c8d', color: 'black'};
+    var endDate = params.node.data.Pokrycie;
+    let key = params.column.colId;
+    if(key.includes("__")){
+      let day = key.substring(8,10);
+      let month = key.substring(5,7);
+      let year = key.substring(0,4);
+      let shift = key.substring(key.length-1,key.length);
+      let hour = 0;
+      switch(shift){
+        case '1':
+          hour = 6;
+          break;
+        case '2':
+          hour = 14;
+          break;
+        case '3':
+          hour = 22;
+          break;
+      }
+      let currDate = new Date(Number(year), Number(month)-1, Number(day), hour, 0, 0);
+      if(currDate <= endDate){
+        return {backgroundColor: '#c99c8d', color: 'black'};
+      }
     }
     return {color: 'black'};
   }
