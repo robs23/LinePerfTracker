@@ -3,9 +3,6 @@
     <button matTooltip="Eksportuj do Excela" class="btn" id="tabToExcel" mat-mini-fab color="accent" (click)="exportToExcel()">
       <mat-icon>download</mat-icon>
     </button>
-    <button matTooltip="Pokaż/urkyj pokrycie planu zapasem" class="btn" [ngClass]="settings.PlanCoverageByInventory?'button-on':'button-off'" id="planCoverageByInventoryToggle" mat-mini-fab color="accent" (click)="toggleInventoryCoverage()">
-      <mat-icon>warehouse</mat-icon>
-    </button>
     <button matTooltip="Pokaż/urkyj pokrycie planu dostawami" class="btn" [ngClass]="settings.PlanCoverageByDeliveries?'button-on':'button-off'" id="planCoverageByDeliveriesToggle" mat-mini-fab color="accent" (click)="toggleDeliveriesCoverage()">
       <mat-icon>moped</mat-icon>
     </button>

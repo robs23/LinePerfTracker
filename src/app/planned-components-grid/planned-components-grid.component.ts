@@ -27,9 +27,8 @@ export class PlannedComponentsGridComponent implements OnInit, OnDestroy {
   PlannedComponentsSchedule: any[];
   colDefs: ColDef[];
   exportButtonClickedSub: Subscription;
-  inventoryCoverageClickedSub: Subscription;
+  deliveriesCoverageClickedSub: Subscription;
   private gridOptions: GridOptions;
-  styleCount: number = 0;
   firstPlanDate: Date = new Date(2100, 0,1);
 
   constructor(private componentService: PlannedComponentsService, private params: ActivatedRoute, private spinnerService: SpinnerService, private userInteractionService: UserInteractionService) {
@@ -39,7 +38,7 @@ export class PlannedComponentsGridComponent implements OnInit, OnDestroy {
         this.jasonToExcel();
       }
     );
-    this.inventoryCoverageClickedSub = userInteractionService.coverageByInventoryClicked$.subscribe(
+    this.deliveriesCoverageClickedSub = userInteractionService.coverageByDeliveriesClicked$.subscribe(
       value => {
         if(value){
           // on
@@ -67,7 +66,7 @@ export class PlannedComponentsGridComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void{
     this.exportButtonClickedSub.unsubscribe();
-    this.inventoryCoverageClickedSub.unsubscribe();
+    this.deliveriesCoverageClickedSub.unsubscribe();
   }
 
   onGridReady(params){
@@ -199,15 +198,11 @@ export class PlannedComponentsGridComponent implements OnInit, OnDestroy {
   setDynamicHeaders(): void{
     var p = this.PlannedComponentsSchedule[0];
     this.colDefs = [];
-    let today = new Date();
-    let currShift = today.getShift();
-    
 
     for (var key in p) {
       if (p.hasOwnProperty(key)) {
         let hName = key;
         let isPinned = true;
-        let colStyle = {};
         let colWidth = 90;
         let colFilter = "agTextColumnFilter";
         let colType = "textColumn";
@@ -232,9 +227,6 @@ export class PlannedComponentsGridComponent implements OnInit, OnDestroy {
           let month = key.substring(5,7);
           let shift = key.substring(key.length-1,key.length);
 
-          if(Number(day) == today.getDate() && Number(month) == (today.getMonth()+1) && shift == currShift.toString()){
-            colStyle = {'background-color': '#cddc39'};
-          }
           switch(shift){
             case '1':
               shift = "I";
@@ -266,8 +258,7 @@ export class PlannedComponentsGridComponent implements OnInit, OnDestroy {
             valueFormatter: colFormatter
           })
       }
-  }
-    console.log("StyleCount: ", this.styleCount);
+    }
   }
 
   logData(): void{
