@@ -14,6 +14,7 @@ import { SpinnerService  } from '../services/spinner.service';
 import '../extensions';
 import * as XLSX from 'xlsx'; 
 import { elementEventFullName } from '@angular/compiler/src/view_compiler/view_compiler';
+import { formatCurrency } from '@angular/common';
 
 @Component({
   selector: 'app-planned-components-grid',
@@ -210,6 +211,7 @@ export class PlannedComponentsGridComponent implements OnInit, OnDestroy {
         let colWidth = 90;
         let colFilter = "agTextColumnFilter";
         let colType = "textColumn";
+        let colFormatter = null;
 
         if(key == "Nazwa"){
           colWidth = 180;
@@ -221,6 +223,7 @@ export class PlannedComponentsGridComponent implements OnInit, OnDestroy {
         }else if(key == "Pokrycie"){
           colFilter = "agDateColumnFilter";
           colType = "dateColumn";
+          colFormatter = this.dateFormatter;
         }
 
         if(key.includes("__")){
@@ -259,7 +262,8 @@ export class PlannedComponentsGridComponent implements OnInit, OnDestroy {
             pinned: isPinned,
             cellStyle: params => this.cellStyle(params, key),
             width: colWidth,
-            type: colType
+            type: colType,
+            valueFormatter: colFormatter
           })
       }
   }
@@ -272,15 +276,23 @@ export class PlannedComponentsGridComponent implements OnInit, OnDestroy {
     });
   }
 
+  dateFormatter(params): string{
+    let dateString = params.data.Pokrycie;
+    let date = new Date(dateString);
+    return date.formatString();
+  }
+
   cellStyle(params, id: string): CellStyle{
     var endDate = params.node.data.Pokrycie;
     let key = params.column.colId;
+
     if(key.includes("__")){
       let day = key.substring(8,10);
       let month = key.substring(5,7);
       let year = key.substring(0,4);
       let shift = key.substring(key.length-1,key.length);
       let hour = 0;
+      
       switch(shift){
         case '1':
           hour = 6;
@@ -293,6 +305,15 @@ export class PlannedComponentsGridComponent implements OnInit, OnDestroy {
           break;
       }
       let currDate = new Date(Number(year), Number(month)-1, Number(day), hour, 0, 0);
+      let today = new Date();
+      let currShift = today.getShift();
+      if(Number(day) == today.getDate() && Number(month) == (today.getMonth()+1) && shift == currShift.toString()){
+        if(currDate <= endDate){
+          return {backgroundColor: '#c99c8d', borderColor: 'transparent #cddc39', borderWidth: '1px 5px' ,color: 'black'};
+        }else{
+          return {borderColor: 'transparent #cddc39', borderWidth: '1px 5px',color: 'black'};
+        }
+      }
       if(currDate <= endDate){
         return {backgroundColor: '#c99c8d', color: 'black'};
       }
