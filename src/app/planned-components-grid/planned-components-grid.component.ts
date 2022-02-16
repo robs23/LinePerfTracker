@@ -194,6 +194,14 @@ export class PlannedComponentsGridComponent implements OnInit, OnDestroy {
     return endDate;
   }
 
+  getDelivery(index: string, day: string): number{
+    let res = 0;
+    let currDate: Date;
+
+    //let x = this.DeliveryItems.find(f=>f.ProductIndex==index && f.DeliveryDate==currDate)
+    return res;
+  }
+
 
   setDynamicHeaders(): void{
     var p = this.PlannedComponentsSchedule[0];

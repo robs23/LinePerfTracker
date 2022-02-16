@@ -19,16 +19,6 @@ export class ComponentsComponent implements OnInit {
     this.userInteractionService.emitExportClicked(true);
   }
 
-  toggleInventoryCoverage(): void{
-    if(this.settings.PlanCoverageByInventory){
-      this.settings.PlanCoverageByInventory = false;
-      this.userInteractionService.emitPlanCoverageByInventoryClicked(false);
-    }else{
-        this.settings.PlanCoverageByInventory = true;
-        this.userInteractionService.emitPlanCoverageByInventoryClicked(true);
-    }
-  }
-
   toggleDeliveriesCoverage(): void{
     if(this.settings.PlanCoverageByDeliveries){
       this.settings.PlanCoverageByDeliveries = false;
