@@ -100,7 +100,7 @@ export class PlannedComponentsGridComponent implements OnInit, OnDestroy {
         var lastDate = today.addDays(7);
         firstDateString = firstDate.formatString();
         lastDateString = lastDate.formatString();
-        const qry = `OPERATION_DATE >= '${firstDateString}' AND OPERATION_DATE < '${lastDateString}'`;
+        const qry = `OPERATION_DATE >= '${firstDateString}' AND OPERATION_DATE < '${lastDateString}' AND SUB_PROD_TYPE <> 'Półprodukty'`;
         this.componentService.getComponentsScheduleAndDeliveries(qry).subscribe(responseList => {
           this.PlannedComponentsSchedule = responseList[0];
           this.DeliveryItems = responseList[1];
@@ -184,7 +184,7 @@ export class PlannedComponentsGridComponent implements OnInit, OnDestroy {
             break;
         }
         
-        if(stock <= 0){
+        if(stock < 0){
           //our coverage ends here
           break;
         }
@@ -307,7 +307,7 @@ export class PlannedComponentsGridComponent implements OnInit, OnDestroy {
       let today = new Date();
       let currShift = today.getShift();
       if(Number(day) == today.getDate() && Number(month) == (today.getMonth()+1) && shift == currShift.toString()){
-        if(currDate <= endDate){
+        if(currDate < endDate){
           return {backgroundColor: '#c99c8d', borderColor: 'transparent #cddc39', borderWidth: '1px 5px' ,color: 'black'};
         }else{
           return {borderColor: 'transparent #cddc39', borderWidth: '1px 5px',color: 'black'};
