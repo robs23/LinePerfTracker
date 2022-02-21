@@ -7,6 +7,9 @@ import { PlannedComponent } from '../interfaces/planned-component';
 import { InventorySnapshot } from '../interfaces/inventory-snapshot';
 import { DeliveryItem } from '../interfaces/delivery-item';
 import { stringify } from '@angular/compiler/src/util';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { Router } from '@angular/router';
+import { PlannedComponentScheduleComponent } from '../planned-component-schedule/planned-component-schedule.component';
 
 
 @Injectable({
@@ -14,7 +17,19 @@ import { stringify } from '@angular/compiler/src/util';
 })
 export class PlannedComponentsService {
 
-constructor(private http: HttpClient) { }
+constructor(private http: HttpClient, private router: Router, private dialog: MatDialog) { }
+
+openComponentSchedulePage(componentSchedule): MatDialogRef<PlannedComponentScheduleComponent> {
+  const dialogRef = this.dialog.open(PlannedComponentScheduleComponent,
+    {
+      data: componentSchedule
+  });
+  return dialogRef;
+};
+
+closeComponentSchedulePage(ref:MatDialogRef<PlannedComponentScheduleComponent>){
+  ref.close();
+}
 
 getPlannedComponents(query?: string): Observable<PlannedComponent[]>{
   if(query == undefined){

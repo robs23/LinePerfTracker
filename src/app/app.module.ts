@@ -32,9 +32,10 @@ import {VgBufferingModule} from '@videogular/ngx-videogular/buffering';
 import { PlannedComponentsGridComponent } from './planned-components-grid/planned-components-grid.component';
 import { AgGridModule } from 'ag-grid-angular';
 import { ComponentsComponent } from './components/components.component';
+import { PlannedComponentScheduleComponent } from './planned-component-schedule/planned-component-schedule.component';
 
 @NgModule({
-   declarations: [														
+   declarations: [															
       AppComponent,
       MachinesComponent,
       LinePerformanceComponent,
@@ -53,7 +54,8 @@ import { ComponentsComponent } from './components/components.component';
       VirtualTruckItemsComponent,
       MediaPlayerComponent,
       PlannedComponentsGridComponent,
-      ComponentsComponent
+      ComponentsComponent,
+      PlannedComponentScheduleComponent
    ],
    imports: [
       BrowserModule,

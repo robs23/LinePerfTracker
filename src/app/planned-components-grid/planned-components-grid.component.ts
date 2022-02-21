@@ -15,6 +15,8 @@ import '../extensions';
 import * as XLSX from 'xlsx'; 
 import { elementEventFullName } from '@angular/compiler/src/view_compiler/view_compiler';
 import { formatCurrency } from '@angular/common';
+import { ComponentSchedule } from '../interfaces/component-schedule';
+import { stringify } from '@angular/compiler/src/util';
 
 @Component({
   selector: 'app-planned-components-grid',
@@ -30,6 +32,7 @@ export class PlannedComponentsGridComponent implements OnInit, OnDestroy {
   deliveriesCoverageClickedSub: Subscription;
   private gridOptions: GridOptions;
   firstPlanDate: Date = new Date(2100, 0,1);
+  componentPageRef;
 
   constructor(private componentService: PlannedComponentsService, private params: ActivatedRoute, private spinnerService: SpinnerService, private userInteractionService: UserInteractionService) {
     this.exportButtonClickedSub = userInteractionService.exportClicked$.subscribe(
@@ -337,5 +340,19 @@ export class PlannedComponentsGridComponent implements OnInit, OnDestroy {
     },2500);
     
   }  
+
+  onCellDoubleClicked(params){
+    let component = params.data.Produkt;
+    let period = params.column.colId;
+  }
+
+  showComponentPage(e, chart, opts): void{
+    let query: string;
+    let currComponent: ComponentSchedule;
+    this.componentService.getPlannedComponents(query).subscribe(response => {
+      currComponent.SCHEDULE = response;
+    });
+    this.componentPageRef = this.componentService.openComponentSchedulePage(currComponent);
+  }
 
 }

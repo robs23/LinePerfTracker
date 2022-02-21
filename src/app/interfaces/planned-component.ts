@@ -17,5 +17,6 @@ export interface PlannedComponent {
         ORDER_TYPE_NAME: string,
         BOM_NR: string,
         PRODUCT_QUANTITY: number,
-        PRODUCT_QUANTITY_ALL: number
+        PRODUCT_QUANTITY_ALL: number,
+        PARENT_NR: string
 }
