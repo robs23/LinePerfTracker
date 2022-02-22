@@ -1,7 +1,7 @@
 <h2 mat-dialog-mat-dialog-title>{{componentSchedule.PRODUCT_NR}} - {{componentSchedule.PRODUCT_NAME}}</h2>
   <div class="component-items-container">
     <div *ngIf="componentSchedule!=undefined"> 
-      <div style="width: 800px; height: 800px" class="ag-theme-balham">
+      <div class="ag-theme-balham">
         <ag-grid-angular 
         class="ag-theme-balham"
         [rowData]="componentSchedule.SCHEDULE"

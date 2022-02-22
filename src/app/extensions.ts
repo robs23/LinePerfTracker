@@ -4,6 +4,7 @@ declare global {
     }  
     interface Date{
         addDays(days: number): Date;
+        addHours(hours: number): Date;
         formatString(): string;
         getShift(): number;
     }
@@ -34,5 +35,10 @@ declare global {
     }else{
         return 3;
     }
+   }
+   Date.prototype.addHours = function(hours: number): Date{
+    var date = new Date(this.valueOf());
+    date.setHours(date.getHours() + hours);
+    return date;
    }
    export {}; 

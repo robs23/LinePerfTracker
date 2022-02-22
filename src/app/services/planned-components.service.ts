@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { forkJoin } from 'rxjs';
 import * as secrets from '../secrets';
@@ -10,7 +10,8 @@ import { stringify } from '@angular/compiler/src/util';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { PlannedComponentScheduleComponent } from '../planned-component-schedule/planned-component-schedule.component';
-
+import { catchError, finalize } from 'rxjs/operators';
+import { ComponentSchedule } from '../interfaces/component-schedule';
 
 @Injectable({
   providedIn: 'root'
@@ -19,7 +20,7 @@ export class PlannedComponentsService {
 
 constructor(private http: HttpClient, private router: Router, private dialog: MatDialog) { }
 
-openComponentSchedulePage(componentSchedule): MatDialogRef<PlannedComponentScheduleComponent> {
+openComponentSchedulePage(componentSchedule: ComponentSchedule): MatDialogRef<PlannedComponentScheduleComponent> {
   const dialogRef = this.dialog.open(PlannedComponentScheduleComponent,
     {
       data: componentSchedule
@@ -32,11 +33,12 @@ closeComponentSchedulePage(ref:MatDialogRef<PlannedComponentScheduleComponent>){
 }
 
 getPlannedComponents(query?: string): Observable<PlannedComponent[]>{
-  if(query == undefined){
-    return this.http.get<PlannedComponent[]>(secrets.ApiAddress + 'GetPlannedComponents');
-  }else{
-    return this.http.get<PlannedComponent[]>(secrets.ApiAddress + 'GetPlannedComponents?query=' + query);
+  let methodName = "GetPlannedComponents";
+  if(query != undefined){
+    methodName += "?query=" + query;
   }
+  // return this.http.get<PlannedComponent[]>(secrets.ApiAddress + methodName).pipe(catchError(this.errorHandler));
+  return this.http.get<PlannedComponent[]>(secrets.ApiAddress + methodName);
   
 }
 
@@ -73,6 +75,10 @@ getComponentsScheduleAndDeliveries(scheduleQuery?: string, deliveriesQuery?: str
   let deliveriesResponse = this.http.get<DeliveryItem[]>(secrets.ApiAddress + 'GetDeliveryItems' + deliveriesQuery);
   
   return forkJoin([scheduleResponse, deliveriesResponse]);
+}
+
+errorHandler(error: HttpErrorResponse) {
+  return Observable.throw(error.message || "server error.");
 }
 
 }

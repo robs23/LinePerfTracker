@@ -342,17 +342,67 @@ export class PlannedComponentsGridComponent implements OnInit, OnDestroy {
   }  
 
   onCellDoubleClicked(params){
-    let component = params.data.Produkt;
-    let period = params.column.colId;
+    if(params.column.colId.includes("__")){
+      let component: ComponentSchedule = {
+        PRODUCT_NR: params.data.Produkt,
+        PRODUCT_NAME: params.data.Nazwa,
+        SELECTED_PERIOD_START: undefined,
+        SELECTED_PERIOD_END: undefined,
+        SCHEDULE: undefined
+      }
+      let period = this.colIdToDate(params.column.colId);
+      if(period != undefined){
+        component.SELECTED_PERIOD_START = period;
+        component.SELECTED_PERIOD_END = period.addHours(8);
+      }
+      this.showComponentPage(component);
+    }
+    
   }
 
-  showComponentPage(e, chart, opts): void{
-    let query: string;
-    let currComponent: ComponentSchedule;
-    this.componentService.getPlannedComponents(query).subscribe(response => {
-      currComponent.SCHEDULE = response;
-    });
-    this.componentPageRef = this.componentService.openComponentSchedulePage(currComponent);
+  showComponentPage(component: ComponentSchedule): void{
+    var spinnerRef = this.spinnerService.start();
+    const qry = `OPERATION_DATE >= '${this.firstPlanDate.formatString()}' AND OPERATION_DATE < '${this.firstPlanDate.addDays(7).formatString()}' AND SUB_PROD_TYPE <> 'Półprodukty' AND PRODUCT_NR = '${component.PRODUCT_NR}'&withParents=true`;
+
+    this.componentService.getPlannedComponents(qry).subscribe(
+      response => 
+      {
+        component.SCHEDULE = response;
+        this.spinnerService.stop(spinnerRef);
+        this.componentPageRef = this.componentService.openComponentSchedulePage(component);
+      }, 
+      error => (console.log(error))
+    );
+    
+  }
+
+  colIdToDate(colId: string): Date{
+    try{
+      if(colId.includes("__")){
+        let datePart = colId.split("__")[0];
+        let day = datePart.substring(8,10);
+        let month = datePart.substring(5,7);
+        let year = datePart.substring(0,4);
+        let shift = colId.substring(colId.length-1,colId.length);
+        let hour;
+        switch(shift){
+          case '1':
+            hour = 6;
+            break;
+          case '2':
+            hour = 14;
+            break;
+          case '3':
+            hour = 22;
+            break;
+        }
+        let currDate = new Date(Number(year), Number(month)-1, Number(day), hour, 0, 0);
+        return currDate;
+      }
+    }catch(error){
+      console.log(error);
+    }
+    return undefined;
   }
 
 }
