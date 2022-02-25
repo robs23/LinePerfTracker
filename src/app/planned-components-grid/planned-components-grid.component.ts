@@ -120,7 +120,6 @@ export class PlannedComponentsGridComponent implements OnInit, OnDestroy {
   }
 
   addInventoryAndCoverageEndColumns(): void{
-    let newArray = [];
     for(let i = 0; i < this.PlannedComponentsSchedule.length; i++){
       let ind = this.PlannedComponentsSchedule[i].Produkt;
       let stock = this.InventorySnapshots.find(f=>f.ProductIndex == ind && f.Status == "U")?.Size;
@@ -128,12 +127,32 @@ export class PlannedComponentsGridComponent implements OnInit, OnDestroy {
       if(stock == undefined){
         stock = 0;
       }
-      let element = this.PlannedComponentsSchedule[i].Zapas = stock;
+      this.PlannedComponentsSchedule[i].Zapas = stock;
 
-      let currDate = this.calculateCoverageEnd(this.PlannedComponentsSchedule[i]);
+      let currDate = this.calculateCoverageEnd(this.PlannedComponentsSchedule[i], false);
       this.PlannedComponentsSchedule[i].Pokrycie = currDate;
 
     }
+  }
+
+  addDeliveriesCoverageAndAlertColumns(): void{
+    for(let i = 0; i < this.PlannedComponentsSchedule.length; i++){
+      let currDate = this.calculateCoverageEnd(this.PlannedComponentsSchedule[i], true);
+      this.PlannedComponentsSchedule[i].Pokrycie_dostawami = currDate;
+    }
+    this.colDefs.push({
+      headerName: "Pokrycie dostawami",
+      field: "Pokrycie_dostawami",
+      colId: "Pokrycie_dostawami",
+      sortable: true,
+      filter: "agDateColumnFilter",
+      resizable: true,
+      pinned: true,
+      cellStyle: params => this.cellStyle(params),
+      width: 90,
+      type: "dateColumn",
+      valueFormatter: this.dateFormatter
+    });
   }
 
   setFirstPlanDate(): void{
@@ -166,14 +185,23 @@ export class PlannedComponentsGridComponent implements OnInit, OnDestroy {
     }
   }
 
-  calculateCoverageEnd(item): Date{
+  calculateCoverageEnd(item, withDeliveries: boolean): Date{
     let stock = item.Zapas;
     let endDate = this.firstPlanDate;
+    
 
     for(let key in item){
       if(key.includes("__")){
         let plan = item[key];
         stock = stock - plan;
+        if(withDeliveries){
+          let component: string = item["Produkt"];
+          let currDate = this.colIdToDate(key);
+          if(currDate != undefined){
+            let delivery = this.getDelivery(component, currDate);
+            stock += delivery;
+          }
+        }
         let day = key.substring(8,10);
         let month = key.substring(5,7);
         let year = key.substring(0,4);
@@ -199,14 +227,6 @@ export class PlannedComponentsGridComponent implements OnInit, OnDestroy {
       }
     }
     return endDate;
-  }
-
-  addDeliveries(): void{
-    if(this.PlannedComponentsSchedule.length > 0){
-      for(let s in this.PlannedComponentsSchedule){
-        let component = s["Produkt"];
-      }
-    }
   }
 
   getDelivery(index: string, day: Date): number{
@@ -277,7 +297,7 @@ export class PlannedComponentsGridComponent implements OnInit, OnDestroy {
             filter: colFilter,
             resizable: true,
             pinned: isPinned,
-            cellStyle: params => this.cellStyle(params, key),
+            cellStyle: params => this.cellStyle(params),
             width: colWidth,
             type: colType,
             valueFormatter: colFormatter
@@ -287,6 +307,7 @@ export class PlannedComponentsGridComponent implements OnInit, OnDestroy {
   }
 
   toggleDeliveriesCoverage(): void{
+    this.addDeliveriesCoverageAndAlertColumns();
     this.gridOptions.api.setColumnDefs(this.colDefs);
   }
 
@@ -296,7 +317,7 @@ export class PlannedComponentsGridComponent implements OnInit, OnDestroy {
     return date.formatString();
   }
 
-  cellStyle(params, id: string): CellStyle{
+  cellStyle(params): CellStyle{
     var endDate = params.node.data.Pokrycie;
     let component = params.node.data.Produkt;
     let key = params.column.colId;
