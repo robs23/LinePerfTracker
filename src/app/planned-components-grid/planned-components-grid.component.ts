@@ -194,14 +194,6 @@ export class PlannedComponentsGridComponent implements OnInit, OnDestroy {
       if(key.includes("__")){
         let plan = item[key];
         stock = stock - plan;
-        if(withDeliveries){
-          let component: string = item["Produkt"];
-          let currDate = this.colIdToDate(key);
-          if(currDate != undefined){
-            let delivery = this.getDelivery(component, currDate);
-            stock += delivery;
-          }
-        }
         let day = key.substring(8,10);
         let month = key.substring(5,7);
         let year = key.substring(0,4);
@@ -217,6 +209,14 @@ export class PlannedComponentsGridComponent implements OnInit, OnDestroy {
           case '3':
             hour = 22;
             break;
+        }
+        if(withDeliveries){
+          let component: string = item["Produkt"];
+          let currDate = this.colIdToDate(key);
+          if(currDate != undefined){
+            let delivery = this.getDelivery(component, currDate.addHours(hour*-1));
+            stock += delivery;
+          }
         }
         
         if(stock < 0){
@@ -319,6 +319,7 @@ export class PlannedComponentsGridComponent implements OnInit, OnDestroy {
 
   cellStyle(params): CellStyle{
     var endDate = params.node.data.Pokrycie;
+    let endDateWithDeliveries = endDate;
     let component = params.node.data.Produkt;
     let key = params.column.colId;
     let deliveriesEnabled = this.settings.PlanCoverageByDeliveries;
@@ -344,27 +345,41 @@ export class PlannedComponentsGridComponent implements OnInit, OnDestroy {
       let currDate = new Date(Number(year), Number(month)-1, Number(day), hour, 0, 0);
       let today = new Date();
       let currShift = today.getShift();
-      if(deliveriesEnabled && hour ==14){
-        let delivery = this.getDelivery(component, currDate.addHours(hour*-1));
-        if(delivery > 0){
-          if(currDate < endDate){
-            return {backgroundColor: '#c99c8d', borderColor: 'red red', borderWidth: '3px 3px' ,color: 'black'};
-          }else{
-            return {borderColor: 'red red', borderWidth: '3px 3px',color: 'black'};
+      if(deliveriesEnabled){
+        endDateWithDeliveries = params.node.data.Pokrycie_dostawami;
+        if(hour ==14){
+          let delivery = this.getDelivery(component, currDate.addHours(hour*-1));
+          if(delivery > 0){
+            if(currDate < endDate){
+              return {backgroundColor: '#c99c8d', borderColor: 'red red', borderWidth: '3px 3px' ,color: 'black'};
+            }else{
+              if(deliveriesEnabled && currDate < endDateWithDeliveries){
+                return {backgroundColor: '#8b5441', borderColor: 'red red', borderWidth: '3px 3px' ,color: 'black'};
+              }
+              return {borderColor: 'red red', borderWidth: '3px 3px',color: 'black'};
+            }
           }
         }
+        
       }
       if(Number(day) == today.getDate() && Number(month) == (today.getMonth()+1) && shift == currShift.toString()){
         //today this very shift 
         if(currDate < endDate){
           return {backgroundColor: '#c99c8d', borderColor: 'transparent #cddc39', borderWidth: '1px 5px' ,color: 'black'};
         }else{
+          if(deliveriesEnabled && currDate < endDateWithDeliveries){
+            return {backgroundColor: '#8b5441', borderColor: 'transparent #cddc39', borderWidth: '1px 5px' ,color: 'black'};
+          }
           return {borderColor: 'transparent #cddc39', borderWidth: '1px 5px',color: 'black'};
         }
       }
       if(currDate <= endDate){
         //other
         return {backgroundColor: '#c99c8d', color: 'black'};
+      }else{
+        if(deliveriesEnabled && currDate <= endDateWithDeliveries){
+          return {backgroundColor: '#8b5441', color: 'black'};
+        }
       }
     }
     return {color: 'black'};
