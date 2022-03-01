@@ -28,7 +28,16 @@ export class PlannedComponentScheduleComponent implements OnInit {
     this.gridOptions = {
       localeTextFunc: (key: string, defaultValue: string) =>  localePl[key] || defaultValue,
       enableCellTextSelection: true,
-      rowSelection: 'multiple'
+      rowSelection: 'multiple',
+      isExternalFilterPresent: function (){
+        return true;
+      },
+      doesExternalFilterPass: function(rowNode){
+        if(rowNode.data.PRODUCT_QUANTITY == 0){
+          return false;
+        }
+        return true;
+      }
     }
   }
 
@@ -70,7 +79,7 @@ export class PlannedComponentScheduleComponent implements OnInit {
         cellStyle: params => this.cellStyle(params)
       },
       {
-        headerName: "Operacja",
+        headerName: "Operacja / Vendor",
         field: "OPERATION_NR",
         colId: "Operation",
         sortable: true,
@@ -90,9 +99,29 @@ export class PlannedComponentScheduleComponent implements OnInit {
         cellStyle: params => this.cellStyle(params)
       },
       {
+        headerName: "Typ",
+        field: "TYPE",
+        colId: "Type",
+        sortable: true,
+        filter: "agTextColumnFilter",
+        resizable: true,
+        pinned: false,
+        cellStyle: params => this.cellStyle(params)
+      },
+      {
         headerName: "Ilość",
         field: "PRODUCT_QUANTITY",
         colId: "ProductQty",
+        sortable: true,
+        filter: "agNumberColumnFilter",
+        resizable: true,
+        pinned: false,
+        cellStyle: params => this.cellStyle(params)
+      },
+      {
+        headerName: "Pozostanie",
+        field: "REMAINING_STOCK",
+        colId: "RemainingStock",
         sortable: true,
         filter: "agNumberColumnFilter",
         resizable: true,
@@ -109,8 +138,30 @@ export class PlannedComponentScheduleComponent implements OnInit {
     try{
       let currDate: Date;
       currDate = new Date(params.data.OPERATION_DATE);
+      let colName = params.column.colId;
+      if(colName == "Type"){
+        if(params.data.TYPE == "Dostawa"){
+          if(currDate >= this.componentSchedule.SELECTED_PERIOD_START && currDate < this.componentSchedule.SELECTED_PERIOD_END){
+            return {borderColor: '#cddc39 #cddc39', backgroundColor: 'green' ,color: 'black'};
+          }
+          return {backgroundColor: 'green', color: 'black'};
+        }else{
+          if(currDate >= this.componentSchedule.SELECTED_PERIOD_START && currDate < this.componentSchedule.SELECTED_PERIOD_END){
+            return {borderColor: '#cddc39 #cddc39', backgroundColor: 'red' ,color: 'black'};
+          }
+          return {backgroundColor: 'red', color: 'black'};
+        }
+      }
+      if(colName == "RemainingStock"){
+        if(params.data.REMAINING_STOCK <= 0){
+          if(currDate >= this.componentSchedule.SELECTED_PERIOD_START && currDate < this.componentSchedule.SELECTED_PERIOD_END){
+            return {borderColor: '#cddc39 #cddc39', backgroundColor: 'red' ,color: 'black'};
+          }
+          return {backgroundColor: 'red', color: 'black'};
+        }
+      }
       if(currDate >= this.componentSchedule.SELECTED_PERIOD_START && currDate < this.componentSchedule.SELECTED_PERIOD_END){
-        return {backgroundColor: '#cddc39',color: 'black'};
+        return {borderColor: '#cddc39 #cddc39',color: 'black'};
       }
     }catch(error){
       console.log(error);

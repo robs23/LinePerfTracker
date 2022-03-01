@@ -18,5 +18,7 @@ export interface PlannedComponent {
         BOM_NR: string,
         PRODUCT_QUANTITY: number,
         PRODUCT_QUANTITY_ALL: number,
-        PARENT_NR: string
+        PARENT_NR: string,
+        REMAINING_STOCK: number,
+        TYPE: string
 }

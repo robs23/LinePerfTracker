@@ -18,6 +18,7 @@ import { elementEventFullName } from '@angular/compiler/src/view_compiler/view_c
 import { formatCurrency } from '@angular/common';
 import { ComponentSchedule } from '../interfaces/component-schedule';
 import { stringify } from '@angular/compiler/src/util';
+import { PlannedComponent } from '../interfaces/planned-component';
 
 @Component({
   selector: 'app-planned-components-grid',
@@ -34,6 +35,7 @@ export class PlannedComponentsGridComponent implements OnInit, OnDestroy {
   private gridOptions: GridOptions;
   firstPlanDate: Date = new Date(2100, 0,1);
   componentPageRef;
+  realTimeStockCategories: string[] = ["Surowce"];
 
   constructor(public settings: Settings, private componentService: PlannedComponentsService, private params: ActivatedRoute, private spinnerService: SpinnerService, private userInteractionService: UserInteractionService) {
     this.exportButtonClickedSub = userInteractionService.exportClicked$.subscribe(
@@ -46,10 +48,14 @@ export class PlannedComponentsGridComponent implements OnInit, OnDestroy {
       value => {
         if(value){
           // on
-          this.toggleDeliveriesCoverage();
+          this.addDeliveriesCoverageColumn();
+          this.recalculateAlert();
+          this.gridOptions.api.setColumnDefs(this.colDefs);
         }else{
           //off
-          this.toggleDeliveriesCoverage();
+          this.remvoeDeliveriesCoverageColumn();
+          this.recalculateAlert();
+          this.gridOptions.api.setColumnDefs(this.colDefs);
         }
       }
     );
@@ -109,11 +115,11 @@ export class PlannedComponentsGridComponent implements OnInit, OnDestroy {
         this.componentService.getComponentsScheduleAndDeliveries(qry).subscribe(responseList => {
           this.PlannedComponentsSchedule = responseList[0];
           this.DeliveryItems = responseList[1];
-          let realTimeStockCategories: string[] = ["Surowce"];
-          this.removeCoveredProduction(realTimeStockCategories)
+          this.removeCoveredProduction()
           this.setFirstPlanDate();
           this.addInventoryAndCoverageEndColumns();
           this.setDynamicHeaders();
+          this.recalculateAlert();
           this.spinnerService.stop(spinnerRef);
         });
       })
@@ -135,7 +141,7 @@ export class PlannedComponentsGridComponent implements OnInit, OnDestroy {
     }
   }
 
-  addDeliveriesCoverageAndAlertColumns(): void{
+  addDeliveriesCoverageColumn(): void{
     for(let i = 0; i < this.PlannedComponentsSchedule.length; i++){
       let currDate = this.calculateCoverageEnd(this.PlannedComponentsSchedule[i], true);
       this.PlannedComponentsSchedule[i].Pokrycie_dostawami = currDate;
@@ -153,6 +159,51 @@ export class PlannedComponentsGridComponent implements OnInit, OnDestroy {
       type: "dateColumn",
       valueFormatter: this.dateFormatter
     });
+  }
+
+  remvoeDeliveriesCoverageColumn(): void{
+    let col = this.colDefs.find(f=>f.field=="Pokrycie_dostawami");
+    const ind = this.colDefs.indexOf(col);
+    if(ind > -1){
+      this.colDefs.splice(ind,1);
+    }
+  }
+
+  recalculateAlert(): void{
+    let currDate = new Date().addDays(30);
+    for(let i = 0; i < this.PlannedComponentsSchedule.length; i++){
+      if(this.settings.PlanCoverageByDeliveries){
+        currDate = new Date(this.PlannedComponentsSchedule[i].Pokrycie_dostawami);
+      }else{
+        currDate = new Date(this.PlannedComponentsSchedule[i].Pokrycie);
+      }
+      if(currDate < this.firstPlanDate.addHours(128)){ //5 days + 8h
+        this.PlannedComponentsSchedule[i].Alert = "Alert";
+      }else{
+        this.PlannedComponentsSchedule[i].Alert = "";
+      }
+    }
+    let alertCol = this.colDefs.find(f=>f.colId=="Alert");
+    if(alertCol != undefined){
+      let ind = this.colDefs.indexOf(alertCol);
+      if(ind > -1){
+        this.colDefs.splice(ind, 1);
+      }
+    }
+
+    this.colDefs.push({
+      headerName: "Alert",
+      field: "Alert",
+      colId: "Alert",
+      sortable: true,
+      filter: "agTextColumnFilter",
+      resizable: true,
+      pinned: true,
+      cellStyle: params => this.cellStyle(params),
+      width: 50,
+      type: "textColumn",
+    });
+    
   }
 
   setFirstPlanDate(): void{
@@ -306,11 +357,6 @@ export class PlannedComponentsGridComponent implements OnInit, OnDestroy {
     }
   }
 
-  toggleDeliveriesCoverage(): void{
-    this.addDeliveriesCoverageAndAlertColumns();
-    this.gridOptions.api.setColumnDefs(this.colDefs);
-  }
-
   dateFormatter(params): string{
     let dateString = params.data.Pokrycie;
     let date = new Date(dateString);
@@ -408,14 +454,22 @@ export class PlannedComponentsGridComponent implements OnInit, OnDestroy {
       let component: ComponentSchedule = {
         PRODUCT_NR: params.data.Produkt,
         PRODUCT_NAME: params.data.Nazwa,
+        STOCK: params.data.Zapas,
         SELECTED_PERIOD_START: undefined,
         SELECTED_PERIOD_END: undefined,
-        SCHEDULE: undefined
+        SCHEDULE: undefined,
+        DELIVERIES: undefined
       }
       let period = this.colIdToDate(params.column.colId);
       if(period != undefined){
         component.SELECTED_PERIOD_START = period;
         component.SELECTED_PERIOD_END = period.addHours(8);
+      }
+      if(this.DeliveryItems != undefined){
+        let dels = this.DeliveryItems.filter(f=>f.ProductIndex == component.PRODUCT_NR);
+        if(dels.length){
+          component.DELIVERIES = dels;
+        }
       }
       this.showComponentPage(component);
     }
@@ -430,12 +484,79 @@ export class PlannedComponentsGridComponent implements OnInit, OnDestroy {
       response => 
       {
         component.SCHEDULE = response;
+        component = this.mergeDeliveriesWithPlannedComponents(component);
+        component.SCHEDULE = component.SCHEDULE.sort((a,b) => (a.OPERATION_DATE < b.OPERATION_DATE) ? -1 : ((b.OPERATION_DATE < a.OPERATION_DATE) ? 1 : 0))
+        component = this.calculateRemainingStock(component);
         this.spinnerService.stop(spinnerRef);
         this.componentPageRef = this.componentService.openComponentSchedulePage(component);
       }, 
       error => (console.log(error))
     );
     
+  }
+
+  mergeDeliveriesWithPlannedComponents(component: ComponentSchedule): ComponentSchedule{
+    if(component.DELIVERIES != undefined){
+      for(let i=0; i< component.DELIVERIES.length; i++){
+        let d = new Date(component.DELIVERIES[i].DeliveryDate).addHours(14);
+        let del: PlannedComponent = {
+          OPERATION_DATE: d.formatString(),
+          OPERATION_DAY: d.addHours(14).formatString(),
+          OPERATION_WEEK: d.getWeek(),  
+          OPERATION_YEAR: d.getFullYear(),
+          SHIFT_ID: 2,
+          SHIFT_NAME: "Druga",
+          MACHINE_NR: "",
+          OPERATION_NR: component.DELIVERIES[i].Vendor,
+          OPERATION_TYPE_NAME: "DELIVERY",
+          ORDER_NR: component.DELIVERIES[i].PurchaseOrder,
+          PRODUCT_NR: component.PRODUCT_NR,
+          PRODUCT_NAME: component.PRODUCT_NAME,
+          PROD_TYPE: "",
+          SUB_PROD_TYPE: "",
+          ORDER_TYPE_CODE: "PO",
+          ORDER_TYPE_NAME: "PO",
+          BOM_NR: "",
+          PRODUCT_QUANTITY: component.DELIVERIES[i].OpenQuantity,
+          PRODUCT_QUANTITY_ALL: component.DELIVERIES[i].OrderQuantity,
+          PARENT_NR: "",
+          REMAINING_STOCK: 0,
+          TYPE: "Dostawa"
+        }
+        component.SCHEDULE.push(del);
+      }
+    }
+    return component;
+  }
+
+  calculateRemainingStock(component: ComponentSchedule): ComponentSchedule{
+    let stock = 0;
+
+    if(component.STOCK != undefined){
+      stock = component.STOCK;
+    }
+
+    for(let i=0; i< component.SCHEDULE.length; i++){
+      //add missing data
+      if(component.SCHEDULE[i].TYPE == undefined){
+        component.SCHEDULE[i].TYPE = "Zużycie";
+        component.SCHEDULE[i].PRODUCT_QUANTITY = component.SCHEDULE[i].PRODUCT_QUANTITY * -1;
+      }
+
+      //remove already covered production
+      if(this.realTimeStockCategories.includes(component.SCHEDULE[i].SUB_PROD_TYPE)){
+        let currDate = new Date(component.SCHEDULE[i].OPERATION_DATE);
+        let now = new Date();
+        if(currDate < now){
+          //it's already covered
+          component.SCHEDULE[i].PRODUCT_QUANTITY = 0;
+        }
+      }
+      
+      component.SCHEDULE[i].REMAINING_STOCK = stock + component.SCHEDULE[i].PRODUCT_QUANTITY;
+      stock = component.SCHEDULE[i].REMAINING_STOCK;
+    }
+    return component;
   }
 
   colIdToDate(colId: string): Date{
@@ -468,20 +589,20 @@ export class PlannedComponentsGridComponent implements OnInit, OnDestroy {
     return undefined;
   }
 
-  removeCoveredProduction(categories: string[]): void{
+  removeCoveredProduction(): void{
     //removes production items that already were covered
     //as for some categories stock is taken in real-time
     let today = new Date();
 
-    if(categories.length > 0){
+    if(this.realTimeStockCategories.length > 0){
       for(let i=0; i<this.PlannedComponentsSchedule.length; i++){
-        if(categories.includes(this.PlannedComponentsSchedule[i].Typ)){
+        if(this.realTimeStockCategories.includes(this.PlannedComponentsSchedule[i].Typ)){
           let x = 0;
           for(let key in this.PlannedComponentsSchedule[i]){
             if(this.PlannedComponentsSchedule[i].hasOwnProperty(key)){
               let currDate = this.colIdToDate(key);
               if(currDate != undefined){
-                if(currDate < today.addHours(-8)){
+                if(currDate < today){
                   let thisShift = this.PlannedComponentsSchedule[i][key];
                   this.PlannedComponentsSchedule[i][key] = 0;
                 }
