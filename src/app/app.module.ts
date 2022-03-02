@@ -33,9 +33,10 @@ import { PlannedComponentsGridComponent } from './planned-components-grid/planne
 import { AgGridModule } from 'ag-grid-angular';
 import { ComponentsComponent } from './components/components.component';
 import { PlannedComponentScheduleComponent } from './planned-component-schedule/planned-component-schedule.component';
+import { DeliveryPreviewComponent } from './delivery-preview/delivery-preview.component';
 
 @NgModule({
-   declarations: [															
+   declarations: [																
       AppComponent,
       MachinesComponent,
       LinePerformanceComponent,
@@ -55,7 +56,8 @@ import { PlannedComponentScheduleComponent } from './planned-component-schedule/
       MediaPlayerComponent,
       PlannedComponentsGridComponent,
       ComponentsComponent,
-      PlannedComponentScheduleComponent
+      PlannedComponentScheduleComponent,
+      DeliveryPreviewComponent
    ],
    imports: [
       BrowserModule,

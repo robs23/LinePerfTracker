@@ -19,6 +19,7 @@ import { formatCurrency } from '@angular/common';
 import { ComponentSchedule } from '../interfaces/component-schedule';
 import { stringify } from '@angular/compiler/src/util';
 import { PlannedComponent } from '../interfaces/planned-component';
+import { Delivery } from '../interfaces/delivery';
 
 @Component({
   selector: 'app-planned-components-grid',
@@ -35,6 +36,7 @@ export class PlannedComponentsGridComponent implements OnInit, OnDestroy {
   private gridOptions: GridOptions;
   firstPlanDate: Date = new Date(2100, 0,1);
   componentPageRef;
+  deliveryPreviewRef;
   realTimeStockCategories: string[] = ["Surowce"];
 
   constructor(public settings: Settings, private componentService: PlannedComponentsService, private params: ActivatedRoute, private spinnerService: SpinnerService, private userInteractionService: UserInteractionService) {
@@ -474,6 +476,46 @@ export class PlannedComponentsGridComponent implements OnInit, OnDestroy {
       this.showComponentPage(component);
     }
     
+  }
+
+  onCellMouseOver(params){
+    // let currDelivery: Delivery = {
+    //   DocumentDate: undefined,
+    //   PurchaseOrder: "po",
+    //   DeliveryDate: undefined,
+    //   Vendor: undefined,
+    //   CreatedOn: undefined,
+    //   SelectdItem: undefined,
+    //   Items: undefined
+    // }
+    // // if(this.DeliveryItems != undefined){
+    // //   if(this.DeliveryItems.)
+    // // }
+
+    // this.deliveryPreviewRef = this.componentService.openDeliveryPreview(currDelivery);
+  }
+
+  onCellContextMenu(params){
+    let currDelivery: Delivery = {
+      DocumentDate: undefined,
+      PurchaseOrder: "po",
+      DeliveryDate: undefined,
+      Vendor: undefined,
+      CreatedOn: undefined,
+      SelectdItem: undefined,
+      Items: undefined
+    }
+    // if(this.DeliveryItems != undefined){
+    //   if(this.DeliveryItems.)
+    // }
+
+    this.deliveryPreviewRef = this.componentService.openDeliveryPreview(currDelivery);
+  }
+
+  onCellMouseOut(params){
+    // if(this.deliveryPreviewRef != undefined){
+    //   this.componentService.closeDeliveryPreview(this.deliveryPreviewRef);
+    // }
   }
 
   showComponentPage(component: ComponentSchedule): void{

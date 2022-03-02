@@ -6,12 +6,14 @@ import * as secrets from '../secrets';
 import { PlannedComponent } from '../interfaces/planned-component';
 import { InventorySnapshot } from '../interfaces/inventory-snapshot';
 import { DeliveryItem } from '../interfaces/delivery-item';
+import { Delivery } from '../interfaces/delivery';
 import { stringify } from '@angular/compiler/src/util';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { PlannedComponentScheduleComponent } from '../planned-component-schedule/planned-component-schedule.component';
 import { catchError, finalize } from 'rxjs/operators';
 import { ComponentSchedule } from '../interfaces/component-schedule';
+import { DeliveryPreviewComponent } from '../delivery-preview/delivery-preview.component';
 
 @Injectable({
   providedIn: 'root'
@@ -29,6 +31,18 @@ openComponentSchedulePage(componentSchedule: ComponentSchedule): MatDialogRef<Pl
 };
 
 closeComponentSchedulePage(ref:MatDialogRef<PlannedComponentScheduleComponent>){
+  ref.close();
+}
+
+openDeliveryPreview(delivery: Delivery): MatDialogRef<DeliveryPreviewComponent> {
+  const dialogRef = this.dialog.open(DeliveryPreviewComponent,
+    {
+      data: delivery
+  });
+  return dialogRef;
+};
+
+closeDeliveryPreview(ref:MatDialogRef<DeliveryPreviewComponent>){
   ref.close();
 }
 

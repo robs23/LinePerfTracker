@@ -6,7 +6,10 @@
       [columnDefs]="colDefs"
       [gridOptions]="gridOptions"
       (gridReady)="onGridReady($event)"
-      (cellDoubleClicked)="onCellDoubleClicked($event)">
+      (cellDoubleClicked)="onCellDoubleClicked($event)"
+      (cellMouseOver)="onCellMouseOver($event)"
+      (cellContextMenu)="onCellContextMenu($event)"
+      (cellMouseOut)="onCellMouseOut($event)">
       </ag-grid-angular>
     </div>
 </div>
