@@ -34,18 +34,6 @@ closeComponentSchedulePage(ref:MatDialogRef<PlannedComponentScheduleComponent>){
   ref.close();
 }
 
-openDeliveryPreview(delivery: Delivery): MatDialogRef<DeliveryPreviewComponent> {
-  const dialogRef = this.dialog.open(DeliveryPreviewComponent,
-    {
-      data: delivery
-  });
-  return dialogRef;
-};
-
-closeDeliveryPreview(ref:MatDialogRef<DeliveryPreviewComponent>){
-  ref.close();
-}
-
 getPlannedComponents(query?: string): Observable<PlannedComponent[]>{
   let methodName = "GetPlannedComponents";
   if(query != undefined){

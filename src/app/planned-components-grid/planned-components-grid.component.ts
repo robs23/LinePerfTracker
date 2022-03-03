@@ -20,6 +20,7 @@ import { ComponentSchedule } from '../interfaces/component-schedule';
 import { stringify } from '@angular/compiler/src/util';
 import { PlannedComponent } from '../interfaces/planned-component';
 import { Delivery } from '../interfaces/delivery';
+import { ActiveCellService } from '../services/active-cell.service';
 
 @Component({
   selector: 'app-planned-components-grid',
@@ -39,7 +40,7 @@ export class PlannedComponentsGridComponent implements OnInit, OnDestroy {
   deliveryPreviewRef;
   realTimeStockCategories: string[] = ["Surowce"];
 
-  constructor(public settings: Settings, private componentService: PlannedComponentsService, private params: ActivatedRoute, private spinnerService: SpinnerService, private userInteractionService: UserInteractionService) {
+  constructor(public settings: Settings, private componentService: PlannedComponentsService, private params: ActivatedRoute, private spinnerService: SpinnerService, private userInteractionService: UserInteractionService, private activeCellService: ActiveCellService) {
     this.exportButtonClickedSub = userInteractionService.exportClicked$.subscribe(
       value => {
         //this.exportToExcel();
@@ -479,43 +480,45 @@ export class PlannedComponentsGridComponent implements OnInit, OnDestroy {
   }
 
   onCellMouseOver(params){
-    // let currDelivery: Delivery = {
-    //   DocumentDate: undefined,
-    //   PurchaseOrder: "po",
-    //   DeliveryDate: undefined,
-    //   Vendor: undefined,
-    //   CreatedOn: undefined,
-    //   SelectdItem: undefined,
-    //   Items: undefined
-    // }
-    // // if(this.DeliveryItems != undefined){
-    // //   if(this.DeliveryItems.)
-    // // }
+    let component = params.data.Produkt;
+    let colId = params.column.colId;
+    let rowIndex = params.rowIndex;
 
-    // this.deliveryPreviewRef = this.componentService.openDeliveryPreview(currDelivery);
+    let currDate = this.colIdToDate(colId);
+    if(this.settings.PlanCoverageByDeliveries && currDate != undefined){
+      if(currDate.getHours() ==14){
+        let day = currDate.addHours(currDate.getHours()*-1);
+        let s = day.addHours(1).toISOString().substring(0,day.toISOString().length-5);
+        let deliveryItem = this.DeliveryItems.find(f=>f.ProductIndex==component && f.DeliveryDate==s);
+        if(deliveryItem?.OpenQuantity > 0){
+          let deliveryItems = this.DeliveryItems.filter(f=>f.PurchaseOrder == deliveryItem.PurchaseOrder);
+
+          let delivery: Delivery = {
+            DocumentDate: deliveryItem.DocumentDate,
+            PurchaseOrder: deliveryItem.PurchaseOrder,
+            DeliveryDate: deliveryItem.DeliveryDate,
+            Vendor: deliveryItem.Vendor,
+            CreatedOn: deliveryItem.CreatedOn,
+            SelectdItem: deliveryItem,
+            Items: deliveryItems
+          }
+          this.activeCellService.onCellMouseOver(colId, rowIndex, delivery);
+        }
+      }
+      
+    }
+    
+    
+
   }
 
   onCellContextMenu(params){
-    let currDelivery: Delivery = {
-      DocumentDate: undefined,
-      PurchaseOrder: "po",
-      DeliveryDate: undefined,
-      Vendor: undefined,
-      CreatedOn: undefined,
-      SelectdItem: undefined,
-      Items: undefined
-    }
-    // if(this.DeliveryItems != undefined){
-    //   if(this.DeliveryItems.)
-    // }
 
-    this.deliveryPreviewRef = this.componentService.openDeliveryPreview(currDelivery);
   }
 
   onCellMouseOut(params){
-    // if(this.deliveryPreviewRef != undefined){
-    //   this.componentService.closeDeliveryPreview(this.deliveryPreviewRef);
-    // }
+    this.activeCellService.onCellMouseOut();
+    // ActiveCellTracker.onCellMouseOut();
   }
 
   showComponentPage(component: ComponentSchedule): void{
