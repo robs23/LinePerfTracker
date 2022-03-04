@@ -1,6 +1,7 @@
 <div class="container">
-  <h2 mat-dialog-mat-dialog-title>{{delivery.PurchaseOrder}}</h2>
-  <div class="component-items-container">
+  <h2 mat-dialog-mat-dialog-title>PO: <b>{{delivery.PurchaseOrder}}</b></h2>
+  <h4>Dostawca: <b>{{delivery.Vendor}}</b></h4>
+  <div class="delivery-items-container">
     <div *ngIf="delivery!=undefined"> 
       <div class="ag-theme-balham">
         <ag-grid-angular 
@@ -12,10 +13,12 @@
         </ag-grid-angular>
       </div>
     </div>
-  
   </div>
+  
 <mat-dialog-actions>
   <button mat-button mat-dialog-close>Zamknij</button>
+  <button mat-button mat-dialog-close>Zmień datę dostawy</button>
+  <button mat-button mat-dialog-close>Ignoruj</button>
 </mat-dialog-actions>
 </div>
 

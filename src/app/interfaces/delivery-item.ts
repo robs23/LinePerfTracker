@@ -12,4 +12,6 @@ export interface DeliveryItem {
         DeliveryDate: string;
         Vendor: string; 
         CreatedOn: string;
+        IsSelected: boolean;
+        IsIgnored: boolean;
 }

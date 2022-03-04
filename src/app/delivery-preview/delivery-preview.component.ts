@@ -37,6 +37,17 @@ export class DeliveryPreviewComponent implements OnInit {
   getColumnDefs(): ColDef[]{
     let res: ColDef[] = [
       {
+        headerName: "Zaznacz",
+        field: "IsSelected",
+        colId: "IsSelected",
+        sortable: true,
+        checkboxSelection: true,
+        headerCheckboxSelection: true,
+        resizable: true,
+        pinned: true,
+        cellStyle: params => this.cellStyle(params)
+      },
+      {
         headerName: "Produkt",
         field: "ProductIndex",
         colId: "ProductIndex",
@@ -57,9 +68,9 @@ export class DeliveryPreviewComponent implements OnInit {
         cellStyle: params => this.cellStyle(params)
       },
       {
-        headerName: "Utworzono",
-        field: "DocumentDate",
-        colId: "DocumentDate",
+        headerName: "Dostawa",
+        field: "DeliveryDate",
+        colId: "DeliveryDate",
         sortable: true,
         filter: "agDateColumnFilter",
         resizable: true,
@@ -88,9 +99,9 @@ export class DeliveryPreviewComponent implements OnInit {
         cellStyle: params => this.cellStyle(params)
       },
       {
-        headerName: "Dostawa",
-        field: "DeliveryDate",
-        colId: "DeliveryDate",
+        headerName: "Utworzono",
+        field: "DocumentDate",
+        colId: "DocumentDate",
         sortable: true,
         filter: "agDateColumnFilter",
         resizable: true,
@@ -106,9 +117,11 @@ export class DeliveryPreviewComponent implements OnInit {
 
   cellStyle(params): CellStyle{
     try{
-      let currDate: Date;
-      currDate = new Date(params.data.OPERATION_DATE);
-      let colName = params.column.colId;
+      let component = params.data.ProductIndex;
+      let date = params.data.DeliveryDate;
+      if(component == this.delivery.SelectdItem.ProductIndex && date == this.delivery.SelectdItem.DeliveryDate){
+        return { backgroundColor: '#cddc39', color: 'black'};
+      }
     }catch(error){
       console.log(error);
     }
@@ -116,7 +129,10 @@ export class DeliveryPreviewComponent implements OnInit {
   }
 
   dateFormatter(params): string{
-    let dateString = params.data.DeliveryDate;
+    let dateString = params.data.DocumentDate;
+    if(params.column.colId == "DeliveryDate"){
+      dateString = params.data.DeliveryDate;
+    }
     let date = new Date(dateString);
     return date.formatString();
   }
