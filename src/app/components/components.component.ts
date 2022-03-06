@@ -3,12 +3,15 @@ import { Settings } from '../settings';
 import { Subject } from 'rxjs';
 import { UserInteractionService } from '../services/userInteraction.service';
 
+
 @Component({
   selector: 'app-components',
   templateUrl: './components.component.html',
   styleUrls: ['./components.component.scss']
 })
 export class ComponentsComponent implements OnInit {
+
+  
 
   constructor(public settings: Settings, private userInteractionService: UserInteractionService) { }
 
@@ -27,6 +30,10 @@ export class ComponentsComponent implements OnInit {
         this.settings.PlanCoverageByDeliveries = true;
         this.userInteractionService.emitPlanCoverageByDeliveriesClicked(true);
     }
+  }
+
+  changePlanCoverageScope(): void{
+    
   }
 
 }
