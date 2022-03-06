@@ -12,6 +12,8 @@ import {MatTooltipModule} from '@angular/material/tooltip';
 import {MatTabsModule} from '@angular/material/tabs';
 import {MatDialogModule} from '@angular/material/dialog';
 import {MatGridListModule} from '@angular/material/grid-list';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 
 const MaterialComponents = [
   MatButtonModule,
@@ -26,7 +28,9 @@ const MaterialComponents = [
   MatTooltipModule,
   MatTabsModule,
   MatDialogModule,
-  MatGridListModule
+  MatGridListModule,
+  MatFormFieldModule,
+  MatInputModule
 ];
 
 @NgModule({

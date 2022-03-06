@@ -6,7 +6,7 @@ import { MachinesComponent } from './machines/machines.component';
 import { LinePerformanceComponent } from './line-performance/line-performance.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MaterialModule } from './material/material.module';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SpinnerComponent } from './spinner/spinner.component';
 import { MachineComponent } from './machine/machine.component';
 import { WelcomeComponent } from './welcome/welcome.component';
@@ -34,9 +34,10 @@ import { AgGridModule } from 'ag-grid-angular';
 import { ComponentsComponent } from './components/components.component';
 import { PlannedComponentScheduleComponent } from './planned-component-schedule/planned-component-schedule.component';
 import { DeliveryPreviewComponent } from './delivery-preview/delivery-preview.component';
+import { PlannedComponentsRangeComponent } from './planned-components-range/planned-components-range.component';
 
 @NgModule({
-   declarations: [																
+   declarations: [																	
       AppComponent,
       MachinesComponent,
       LinePerformanceComponent,
@@ -57,7 +58,8 @@ import { DeliveryPreviewComponent } from './delivery-preview/delivery-preview.co
       PlannedComponentsGridComponent,
       ComponentsComponent,
       PlannedComponentScheduleComponent,
-      DeliveryPreviewComponent
+      DeliveryPreviewComponent,
+      PlannedComponentsRangeComponent
    ],
    imports: [
       BrowserModule,
@@ -65,6 +67,7 @@ import { DeliveryPreviewComponent } from './delivery-preview/delivery-preview.co
       BrowserAnimationsModule,
       MaterialModule,
       FormsModule,
+      ReactiveFormsModule,
       HttpClientModule,
       NgApexchartsModule,
       VgCoreModule,

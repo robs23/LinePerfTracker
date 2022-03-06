@@ -3,6 +3,9 @@
     <button matTooltip="Eksportuj do Excela" class="btn" id="tabToExcel" mat-mini-fab color="accent" (click)="exportToExcel()">
       <mat-icon>download</mat-icon>
     </button>
+    <button matTooltip="Zmień zakres dni planu (domyślnie 7)" class="btn" id="changePlanCoverageScope" mat-mini-fab (click)="changePlanCoverageScope()">
+      <mat-icon>calendar</mat-icon>
+    </button>
     <button matTooltip="Pokaż/urkyj pokrycie planu dostawami" class="btn" [ngClass]="settings.PlanCoverageByDeliveries?'button-on':'button-off'" id="planCoverageByDeliveriesToggle" mat-mini-fab color="accent" (click)="toggleDeliveriesCoverage()">
       <mat-icon>moped</mat-icon>
     </button>

@@ -6,4 +6,5 @@ export class Settings {
   AutoUpdate: boolean = true;
   TabSwitch: boolean = true;
   PlanCoverageByDeliveries: boolean = false;
+  ComponentScheduleScope: number = 7;
 }
