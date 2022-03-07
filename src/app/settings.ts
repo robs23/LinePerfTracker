@@ -7,4 +7,5 @@ export class Settings {
   TabSwitch: boolean = true;
   PlanCoverageByDeliveries: boolean = false;
   ComponentScheduleScope: number = 7;
+  LowStockPercentageAlert: number = 20;
 }

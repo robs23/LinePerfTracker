@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Settings } from '../settings';
 import { Subject } from 'rxjs';
 import { UserInteractionService } from '../services/userInteraction.service';
-
+import { SettingsService } from '../services/settings.service';
 
 @Component({
   selector: 'app-components',
@@ -11,9 +11,9 @@ import { UserInteractionService } from '../services/userInteraction.service';
 })
 export class ComponentsComponent implements OnInit {
 
-  
+  settingsPageRef;
 
-  constructor(public settings: Settings, private userInteractionService: UserInteractionService) { }
+  constructor(public settings: Settings, private userInteractionService: UserInteractionService, private settingsService: SettingsService) { }
 
   ngOnInit() {
   }
@@ -32,8 +32,8 @@ export class ComponentsComponent implements OnInit {
     }
   }
 
-  changePlanCoverageScope(): void{
-    
+  openSettingsPage(): void{
+    this.settingsPageRef = this.settingsService.openSettingsPage();
   }
 
 }

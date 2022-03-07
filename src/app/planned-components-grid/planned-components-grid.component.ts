@@ -33,6 +33,7 @@ export class PlannedComponentsGridComponent implements OnInit, OnDestroy {
   PlannedComponentsSchedule: any[];
   colDefs: ColDef[];
   exportButtonClickedSub: Subscription;
+  settingsChangedSub: Subscription;
   deliveriesCoverageClickedSub: Subscription;
   private gridOptions: GridOptions;
   firstPlanDate: Date = new Date(2100, 0,1);
@@ -45,6 +46,11 @@ export class PlannedComponentsGridComponent implements OnInit, OnDestroy {
       value => {
         //this.exportToExcel();
         this.jasonToExcel();
+      }
+    );
+    this.settingsChangedSub = userInteractionService.componentsPlanSettingsChanged$.subscribe(
+      value => {
+        this.initialize();
       }
     );
     this.deliveriesCoverageClickedSub = userInteractionService.coverageByDeliveriesClicked$.subscribe(
@@ -65,6 +71,10 @@ export class PlannedComponentsGridComponent implements OnInit, OnDestroy {
    }
 
   ngOnInit() {
+    this.initialize();
+  }
+
+  initialize(){
     this.setGridOptions()
     //this.setHeaders();
     let query: string = '';
@@ -111,7 +121,7 @@ export class PlannedComponentsGridComponent implements OnInit, OnDestroy {
         }
         var firstDate = new Date(firstDateString);
         var today = new Date();
-        var lastDate = today.addDays(7);
+        var lastDate = today.addDays(this.settings.ComponentScheduleScope);
         firstDateString = firstDate.formatString();
         lastDateString = lastDate.formatString();
         const qry = `OPERATION_DATE >= '${firstDateString}' AND OPERATION_DATE < '${lastDateString}' AND SUB_PROD_TYPE <> 'Półprodukty'`;
@@ -180,10 +190,16 @@ export class PlannedComponentsGridComponent implements OnInit, OnDestroy {
       }else{
         currDate = new Date(this.PlannedComponentsSchedule[i].Pokrycie);
       }
-      if(currDate < this.firstPlanDate.addHours(128)){ //5 days + 8h
-        this.PlannedComponentsSchedule[i].Alert = "Alert";
+      let hoursOfCoverage: number = this.settings.ComponentScheduleScope * 24 - 8; //128
+      if(currDate < this.firstPlanDate.addHours(hoursOfCoverage)){ //5 days + 8h
+        this.PlannedComponentsSchedule[i].Alert = "Brak pokrycia";
       }else{
-        this.PlannedComponentsSchedule[i].Alert = "";
+        let res = this.getLowStockAlert(this.PlannedComponentsSchedule[i]);
+        if(res!="OK" && res != undefined){
+          this.PlannedComponentsSchedule[i].Alert = res;
+        }else{
+          this.PlannedComponentsSchedule[i].Alert = "";
+        }
       }
     }
     let alertCol = this.colDefs.find(f=>f.colId=="Alert");
@@ -207,6 +223,57 @@ export class PlannedComponentsGridComponent implements OnInit, OnDestroy {
       type: "textColumn",
     });
     
+  }
+
+  getLowStockAlert(item): string{
+    let res: string = "OK";
+    let component = item["Produkt"];
+    
+    let stock = item.Zapas;
+    let beginningStock = item.Zapas;
+    let endDate = this.firstPlanDate;
+    
+
+    for(let key in item){
+      if(key.includes("__")){
+        let plan = item[key];
+        stock = stock - plan;
+        let day = key.substring(8,10);
+        let month = key.substring(5,7);
+        let year = key.substring(0,4);
+        let shift = key.substring(key.length-1,key.length);
+        let hour = 0;
+        switch(shift){
+          case '1':
+            hour = 6;
+            break;
+          case '2':
+            hour = 14;
+            break;
+          case '3':
+            hour = 22;
+            break;
+        }
+        if(this.settings.PlanCoverageByDeliveries){
+          let component: string = item["Produkt"];
+          let currDate = this.colIdToDate(key);
+          if(currDate != undefined){
+            let delivery = this.getDelivery(component, currDate.addHours(hour*-1));
+            stock += delivery;
+          }
+        }
+        
+        if(stock < beginningStock*(this.settings.LowStockPercentageAlert/100)){
+          //our coverage ends here
+          endDate = new Date(Number(year), Number(month)-1, Number(day), hour, 0, 0);
+          res = `Niski zapas (${endDate.formatString()})`;
+          break;
+        }
+        
+      }
+    }
+    
+    return res;
   }
 
   setFirstPlanDate(): void{

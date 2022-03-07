@@ -34,10 +34,10 @@ import { AgGridModule } from 'ag-grid-angular';
 import { ComponentsComponent } from './components/components.component';
 import { PlannedComponentScheduleComponent } from './planned-component-schedule/planned-component-schedule.component';
 import { DeliveryPreviewComponent } from './delivery-preview/delivery-preview.component';
-import { PlannedComponentsRangeComponent } from './planned-components-range/planned-components-range.component';
+import { SettingsComponent } from './settings/settings.component';
 
 @NgModule({
-   declarations: [																	
+   declarations: [																		
       AppComponent,
       MachinesComponent,
       LinePerformanceComponent,
@@ -59,7 +59,7 @@ import { PlannedComponentsRangeComponent } from './planned-components-range/plan
       ComponentsComponent,
       PlannedComponentScheduleComponent,
       DeliveryPreviewComponent,
-      PlannedComponentsRangeComponent
+      SettingsComponent
    ],
    imports: [
       BrowserModule,

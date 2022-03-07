@@ -1,0 +1,24 @@
+<div class="container">
+  <mat-form-field appearance="fill">
+    <mat-label>Zakres widoku (w dniach) </mat-label>
+    <input type="number" id="scope" [formControl]="scopeFormControl" matInput [(ngModel)]="chosenScope">
+    <mat-error *ngIf="scopeFormControl.hasError('min')">
+      Zakres dni musi być większy od 0!
+    </mat-error>
+    <mat-hint>Ile dni w przód ma pokazywać raport? Im więcej dni, tym czas załadowania raportu będzie większy</mat-hint>
+  </mat-form-field>
+  
+  <mat-form-field appearance="fill">
+    <mat-label>Alert niskiego zapasu (w %) </mat-label>
+    <input type="number" id="scope" [formControl]="lowStockAlertFormControl" matInput [(ngModel)]="chosenLowStockAlert">
+    <mat-error *ngIf="lowStockAlertFormControl.hasError('min') || lowStockAlertFormControl.hasError('max')">
+      Podaj liczbę większą od 0 i niewiększą niż 100!
+    </mat-error>
+    <mat-hint>Procentowy stosunek zapasu na koniec danej zmiany do zapasu bieżącego, który uruchomi alert. Np. jeśli zapas początkowy jest 1500 a Alert niskiego zapasu to 10%, alert wystąpi gdy zapas na koniec danej zmiany spadnie poniżej 150</mat-hint>
+  </mat-form-field>
+  
+  <mat-dialog-actions>
+    <button mat-button mat-dialog-close (click)="saveSettings()">Zapisz</button>
+    <button mat-button mat-dialog-close>Anuluj</button>
+  </mat-dialog-actions>
+</div>
