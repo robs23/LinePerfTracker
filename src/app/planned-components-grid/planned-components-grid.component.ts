@@ -276,6 +276,62 @@ export class PlannedComponentsGridComponent implements OnInit, OnDestroy {
     return res;
   }
 
+  getStockOnDate(component: string, date: Date): number{
+    let res: number = undefined;
+    return res;
+  }
+
+  getLateDeliveryAlert(item): string{
+    let res: string = "OK";
+    let component = item["Produkt"];
+    
+    let stock = item.Zapas;
+    let beginningStock = item.Zapas;
+    let endDate = this.firstPlanDate;
+    
+
+    for(let key in item){
+      if(key.includes("__")){
+        let plan = item[key];
+        stock = stock - plan;
+        let day = key.substring(8,10);
+        let month = key.substring(5,7);
+        let year = key.substring(0,4);
+        let shift = key.substring(key.length-1,key.length);
+        let hour = 0;
+        switch(shift){
+          case '1':
+            hour = 6;
+            break;
+          case '2':
+            hour = 14;
+            break;
+          case '3':
+            hour = 22;
+            break;
+        }
+        if(this.settings.PlanCoverageByDeliveries){
+          let component: string = item["Produkt"];
+          let currDate = this.colIdToDate(key);
+          if(currDate != undefined){
+            let delivery = this.getDelivery(component, currDate.addHours(hour*-1));
+            stock += delivery;
+          }
+        }
+        
+        if(stock < beginningStock*(this.settings.LowStockPercentageAlert/100)){
+          //our coverage ends here
+          endDate = new Date(Number(year), Number(month)-1, Number(day), hour, 0, 0);
+          res = `Niski zapas (${endDate.formatString()})`;
+          break;
+        }
+        
+      }
+    }
+    
+    return res;
+  }
+
   setFirstPlanDate(): void{
     var p = this.PlannedComponentsSchedule[0];
     for(var key in p){

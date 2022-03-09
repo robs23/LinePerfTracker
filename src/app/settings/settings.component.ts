@@ -13,12 +13,15 @@ export class SettingsComponent implements OnInit {
 
   scopeFormControl = new FormControl('', [Validators.required, Validators.min(1)]);
   lowStockAlertFormControl = new FormControl('', [Validators.required, Validators.min(1), Validators.max(100)]);
+  lateDeliveryAlertFormControl = new FormControl('', [Validators.required, Validators.min(8)]);
   chosenScope: number;
   chosenLowStockAlert: number;
+  chosenLateDeliveryAlert: number;
 
   constructor(public settings: Settings, private userInteractionService: UserInteractionService) {
     this.chosenScope = settings.ComponentScheduleScope;
     this.chosenLowStockAlert = settings.LowStockPercentageAlert;
+    this.chosenLateDeliveryAlert = settings.LateDeliveryHoursAlert;
    }
 
   ngOnInit() {
@@ -35,6 +38,11 @@ export class SettingsComponent implements OnInit {
     if(this.chosenLowStockAlert > 0 && this.chosenLowStockAlert <= 100){
       isValid = true;
       this.settings.LowStockPercentageAlert = this.chosenLowStockAlert;
+    }
+
+    if(this.chosenLateDeliveryAlert > 0){
+      isValid = true;
+      this.settings.LateDeliveryHoursAlert = this.chosenLateDeliveryAlert;
     }
 
     if(isValid){
