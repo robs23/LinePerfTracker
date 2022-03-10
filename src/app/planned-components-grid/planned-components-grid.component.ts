@@ -276,56 +276,51 @@ export class PlannedComponentsGridComponent implements OnInit, OnDestroy {
     return res;
   }
 
-  getStockOnDate(component: string, date: Date): number{
-    let res: number = undefined;
-    return res;
+  getStockOnDate(component: string, date: Date, withDeliveries: boolean): number{
+    //Stock has to be calculated first
+    let stock: number = undefined;
+    let schedule = this.PlannedComponentsSchedule.find(f=>f.Produkt == component);
+    if(schedule != undefined){
+      stock = schedule.Zapas;
+      for(let key in schedule){
+        if(key.includes("__")){
+          let currDate = this.colIdToDate(key);
+          if(currDate <= date){
+            let plan = schedule[key];
+            let hour = currDate.getHours();
+            if(stock == undefined){ stock = 0;}
+            stock = stock - plan;
+  
+            if(withDeliveries){
+              
+              if(currDate != undefined){
+                let delivery = this.getDelivery(component, currDate.addHours(hour*-1));
+                stock += delivery;
+              }
+            }
+          }else{
+            break;
+          }
+
+        }
+      }
+    }
+    
+    return stock;
   }
 
   getLateDeliveryAlert(item): string{
     let res: string = "OK";
     let component = item["Produkt"];
-    
-    let stock = item.Zapas;
-    let beginningStock = item.Zapas;
-    let endDate = this.firstPlanDate;
-    
-
-    for(let key in item){
-      if(key.includes("__")){
-        let plan = item[key];
-        stock = stock - plan;
-        let day = key.substring(8,10);
-        let month = key.substring(5,7);
-        let year = key.substring(0,4);
-        let shift = key.substring(key.length-1,key.length);
-        let hour = 0;
-        switch(shift){
-          case '1':
-            hour = 6;
-            break;
-          case '2':
-            hour = 14;
-            break;
-          case '3':
-            hour = 22;
-            break;
+    if(this.DeliveryItems != undefined){
+      let deliveries = this.DeliveryItems.filter(f=>f.ProductIndex==component);
+      if(deliveries != undefined){
+        for(let i = 0; i < deliveries.length; i++){
+          let d = deliveries[i];
+          let date = new Date(d.DeliveryDate).addHours(this.settings.DeliveryHour);
+          let stock = this.getStockOnDate(component, date, true);
+          
         }
-        if(this.settings.PlanCoverageByDeliveries){
-          let component: string = item["Produkt"];
-          let currDate = this.colIdToDate(key);
-          if(currDate != undefined){
-            let delivery = this.getDelivery(component, currDate.addHours(hour*-1));
-            stock += delivery;
-          }
-        }
-        
-        if(stock < beginningStock*(this.settings.LowStockPercentageAlert/100)){
-          //our coverage ends here
-          endDate = new Date(Number(year), Number(month)-1, Number(day), hour, 0, 0);
-          res = `Niski zapas (${endDate.formatString()})`;
-          break;
-        }
-        
       }
     }
     
@@ -371,26 +366,13 @@ export class PlannedComponentsGridComponent implements OnInit, OnDestroy {
       if(key.includes("__")){
         let plan = item[key];
         stock = stock - plan;
-        let day = key.substring(8,10);
-        let month = key.substring(5,7);
-        let year = key.substring(0,4);
-        let shift = key.substring(key.length-1,key.length);
-        let hour = 0;
-        switch(shift){
-          case '1':
-            hour = 6;
-            break;
-          case '2':
-            hour = 14;
-            break;
-          case '3':
-            hour = 22;
-            break;
-        }
+        let currDate = this.colIdToDate(key);
+
         if(withDeliveries){
           let component: string = item["Produkt"];
-          let currDate = this.colIdToDate(key);
+
           if(currDate != undefined){
+            let hour = currDate.getHours();
             let delivery = this.getDelivery(component, currDate.addHours(hour*-1));
             stock += delivery;
           }
@@ -400,7 +382,7 @@ export class PlannedComponentsGridComponent implements OnInit, OnDestroy {
           //our coverage ends here
           break;
         }
-        endDate = new Date(Number(year), Number(month)-1, Number(day), hour, 0, 0);
+        endDate = currDate;
       }
     }
     return endDate;

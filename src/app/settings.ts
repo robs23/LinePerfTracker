@@ -9,4 +9,5 @@ export class Settings {
   ComponentScheduleScope: number = 7; //how many days forward the schedule should show?
   LowStockPercentageAlert: number = 20; //stock at the end of shift / beginning stock. If lower than this parameter, alert
   LateDeliveryHoursAlert: number = 8; //delivery must be 8 hours before coverage ends, otherwise alert
+  DeliveryHour: number = 14; //assumes deliveries on 2nd shift (14:00 - 22:00)
 }
