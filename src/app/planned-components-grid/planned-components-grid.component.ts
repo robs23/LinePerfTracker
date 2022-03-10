@@ -311,16 +311,32 @@ export class PlannedComponentsGridComponent implements OnInit, OnDestroy {
 
   getLateDeliveryAlert(item): string{
     let res: string = "OK";
-    let component = item["Produkt"];
-    if(this.DeliveryItems != undefined){
-      let deliveries = this.DeliveryItems.filter(f=>f.ProductIndex==component);
-      if(deliveries != undefined){
-        for(let i = 0; i < deliveries.length; i++){
-          let d = deliveries[i];
-          let date = new Date(d.DeliveryDate).addHours(this.settings.DeliveryHour);
-          let stock = this.getStockOnDate(component, date, true);
-          
+    let stock = item.Zapas;
+    let endDate = this.firstPlanDate;
+    
+
+    for(let key in item){
+      if(key.includes("__")){
+        let plan = item[key];
+        stock = stock - plan;
+        let currDate = this.colIdToDate(key);
+
+        let component: string = item["Produkt"];
+
+        if(currDate != undefined){
+          let hour = currDate.getHours();
+          let delivery = this.getDelivery(component, currDate.addHours(hour*-1));
+          if(delivery > 0){
+
+          }
+          stock += delivery;
         }
+        
+        if(stock < 0){
+          //our coverage ends here
+          break;
+        }
+        endDate = currDate;
       }
     }
     
