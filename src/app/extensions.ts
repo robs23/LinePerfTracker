@@ -21,7 +21,7 @@ declare global {
     return date;
    }
    Date.prototype.formatString = function(): string{
-    var date = new Date(this.valueOf());
+    var date = new Date(this.valueOf()).addHours(1);
     let datePart = date.toISOString().split('T')[0];
     let timePart = date.toISOString().split('T')[1].substring(0,8);
     return datePart + " " + timePart;

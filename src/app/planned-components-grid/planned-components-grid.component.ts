@@ -190,11 +190,20 @@ export class PlannedComponentsGridComponent implements OnInit, OnDestroy {
       }else{
         currDate = new Date(this.PlannedComponentsSchedule[i].Pokrycie);
       }
-      let hoursOfCoverage: number = this.settings.ComponentScheduleScope * 24 - 8; //128
-      if(currDate < this.firstPlanDate.addHours(hoursOfCoverage)){ //5 days + 8h
+      let hoursOfCoverage: number = this.settings.ComponentScheduleScope * 24 - 56; //128
+      let endDate = this.firstPlanDate.addHours(hoursOfCoverage);
+      if(currDate < endDate ){ //5 days + 8h
         this.PlannedComponentsSchedule[i].Alert = "Brak pokrycia";
       }else{
-        let res = this.getLowStockAlert(this.PlannedComponentsSchedule[i]);
+        let res = "";
+        if(this.settings.PlanCoverageByDeliveries){
+          res = this.getLateDeliveryAlert(this.PlannedComponentsSchedule[i]);
+          if(res =="OK" && res == undefined){
+            res = this.getLowStockAlert(this.PlannedComponentsSchedule[i]);
+          }
+        }else{
+          res = this.getLowStockAlert(this.PlannedComponentsSchedule[i]);
+        }
         if(res!="OK" && res != undefined){
           this.PlannedComponentsSchedule[i].Alert = res;
         }else{
@@ -325,9 +334,21 @@ export class PlannedComponentsGridComponent implements OnInit, OnDestroy {
 
         if(currDate != undefined){
           let hour = currDate.getHours();
-          let delivery = this.getDelivery(component, currDate.addHours(hour*-1));
+          let deliveryDate =  currDate.addHours(hour*-1);
+          let delivery = this.getDelivery(component, deliveryDate);
           if(delivery > 0){
-
+            let coverageEnds = this.calculateCoverageEnd(item, false, stock, key);
+            if(coverageEnds >= currDate){
+              //otherwise it's a bug
+              let endOfScope = this.firstPlanDate.addDays(this.settings.ComponentScheduleScope).addHours(this.settings.LateDeliveryHoursAlert*-1);
+              if(currDate.formatString().substring(0,10) < endOfScope.formatString().substring(0,10)){
+                //need that, otherwise there was alert always when there was delivery on the last day of scope
+                if(coverageEnds.addHours(this.settings.LateDeliveryHoursAlert*-1) <= currDate){
+                  res = `Późna dostawa (${deliveryDate.formatString()})`;
+                  break;
+                }
+              }
+            }
           }
           stock += delivery;
         }
@@ -373,32 +394,43 @@ export class PlannedComponentsGridComponent implements OnInit, OnDestroy {
     }
   }
 
-  calculateCoverageEnd(item, withDeliveries: boolean): Date{
-    let stock = item.Zapas;
+  calculateCoverageEnd(item, withDeliveries: boolean, stock: number = undefined, startFrom: string = undefined): Date{
+    //if startFrom is provided, take into account only the key that matches startFrom and all subsequent keys
+    if(stock == undefined){
+      stock = item.Zapas;
+    }
     let endDate = this.firstPlanDate;
-    
+    let isStarted: boolean = false;
+    if(startFrom == undefined){
+      isStarted = true;
+    }
 
     for(let key in item){
       if(key.includes("__")){
-        let plan = item[key];
-        stock = stock - plan;
-        let currDate = this.colIdToDate(key);
+        if(!isStarted && key == startFrom){
+          isStarted = true;
+        }
+        if(isStarted){
+          let plan = item[key];
+          stock = stock - plan;
+          let currDate = this.colIdToDate(key);
 
-        if(withDeliveries){
-          let component: string = item["Produkt"];
+          if(withDeliveries){
+            let component: string = item["Produkt"];
 
-          if(currDate != undefined){
-            let hour = currDate.getHours();
-            let delivery = this.getDelivery(component, currDate.addHours(hour*-1));
-            stock += delivery;
+            if(currDate != undefined){
+              let hour = currDate.getHours();
+              let delivery = this.getDelivery(component, currDate.addHours(hour*-1));
+              stock += delivery;
+            }
           }
+          
+          if(stock < 0){
+            //our coverage ends here
+            break;
+          }
+          endDate = currDate;
         }
-        
-        if(stock < 0){
-          //our coverage ends here
-          break;
-        }
-        endDate = currDate;
       }
     }
     return endDate;
