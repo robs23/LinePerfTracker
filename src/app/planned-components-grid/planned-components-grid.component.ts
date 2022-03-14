@@ -450,6 +450,8 @@ export class PlannedComponentsGridComponent implements OnInit, OnDestroy {
   setDynamicHeaders(): void{
     var p = this.PlannedComponentsSchedule[0];
     this.colDefs = [];
+    let currGroup: any;
+    let prevDayHeader = "";
 
     for (var key in p) {
       if (p.hasOwnProperty(key)) {
@@ -459,6 +461,7 @@ export class PlannedComponentsGridComponent implements OnInit, OnDestroy {
         let colFilter = "agTextColumnFilter";
         let colType = "textColumn";
         let colFormatter = null;
+        let dayHeader = "";
 
         if(key == "Nazwa"){
           colWidth = 180;
@@ -475,9 +478,12 @@ export class PlannedComponentsGridComponent implements OnInit, OnDestroy {
 
         if(key.includes("__")){
           colType = "numberColumn";
+          colWidth = 60;
           let day = key.substring(8,10);
           let month = key.substring(5,7);
+          let year = key.substring(0,4);
           let shift = key.substring(key.length-1,key.length);
+          dayHeader = `${day}.${month}.${year}`;
 
           switch(shift){
             case '1':
@@ -494,23 +500,49 @@ export class PlannedComponentsGridComponent implements OnInit, OnDestroy {
           isPinned = false;
           hName = `${day}.${month} ${shift}`;
           colFilter = "agNumberColumnFilter";
-        }
 
-          this.colDefs.push({
-            headerName: hName,
-            field: key,
-            colId: key,
-            sortable: true,
-            filter: colFilter,
-            resizable: true,
-            pinned: isPinned,
-            cellStyle: params => this.cellStyle(params),
-            width: colWidth,
-            type: colType,
-            valueFormatter: colFormatter
-          })
+          if(dayHeader == prevDayHeader){
+            //let's append existing group
+            currGroup.children.push(this.createColDef(shift, key, colFilter, isPinned, colWidth, colFormatter));
+          }else{
+            if(currGroup?.children?.length > 0){
+              //there's previous group, let's add it
+              this.colDefs.push(currGroup);
+              currGroup = undefined;
+            }
+            //let's create new group
+            currGroup = { 
+              headerName: dayHeader,
+              children: []
+            };
+            currGroup.children.push(this.createColDef(shift, key, colFilter, isPinned, colWidth, colFormatter));
+          }
+          prevDayHeader = dayHeader;
+        }else{
+          this.colDefs.push(this.createColDef(hName, key, colFilter, isPinned, colWidth, colFormatter));
+        }
       }
     }
+    if(currGroup != undefined){
+      //the last one wasn't added, as we add at creation of subsequent group and there was no subsequent group
+      this.colDefs.push(currGroup);
+    }
+  }
+
+  createColDef(headerName: string, key: string, colFilter: string, isPinned: boolean, colWidth: number, colFormatter: any): ColDef{
+    let newCol = {
+      headerName: headerName,
+      field: key,
+      colId: key,
+      sortable: true,
+      filter: colFilter,
+      resizable: true,
+      pinned: isPinned,
+      cellStyle: params => this.cellStyle(params),
+      width: colWidth,
+      valueFormatter: colFormatter
+    }
+    return newCol;
   }
 
   dateFormatter(params): string{
@@ -549,7 +581,7 @@ export class PlannedComponentsGridComponent implements OnInit, OnDestroy {
       let currShift = today.getShift();
       if(deliveriesEnabled){
         endDateWithDeliveries = params.node.data.Pokrycie_dostawami;
-        if(hour ==14){
+        if(hour == this.settings.DeliveryHour){
           let delivery = this.getDelivery(component, currDate.addHours(hour*-1));
           if(delivery > 0){
             if(currDate < endDate){
@@ -639,7 +671,7 @@ export class PlannedComponentsGridComponent implements OnInit, OnDestroy {
 
     let currDate = this.colIdToDate(colId);
     if(this.settings.PlanCoverageByDeliveries && currDate != undefined){
-      if(currDate.getHours() ==14){
+      if(currDate.getHours() ==this.settings.DeliveryHour){
         let day = currDate.addHours(currDate.getHours()*-1);
         let s = day.addHours(1).toISOString().substring(0,day.toISOString().length-5);
         let deliveryItem = this.DeliveryItems.find(f=>f.ProductIndex==component && f.DeliveryDate==s);
