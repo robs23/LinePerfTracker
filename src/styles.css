@@ -2,3 +2,11 @@
 
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+.ag-header-group-cell{
+    text-align: center !important;
+}
+
+.ag-header-cell-filtered{
+    color: 'red' !important;
+}

@@ -35,6 +35,7 @@ export class PlannedComponentsGridComponent implements OnInit, OnDestroy {
   exportButtonClickedSub: Subscription;
   settingsChangedSub: Subscription;
   deliveriesCoverageClickedSub: Subscription;
+  quickFilterValueChangedSub: Subscription;
   private gridOptions: GridOptions;
   firstPlanDate: Date = new Date(2100, 0,1);
   lastPlanDate: Date = new Date(2010, 0, 1);
@@ -69,6 +70,16 @@ export class PlannedComponentsGridComponent implements OnInit, OnDestroy {
         }
       }
     );
+    this.quickFilterValueChangedSub = userInteractionService.ComponentsPlanQuickFilterChangedSubject.subscribe(
+      value => {
+        if(value?.length > 0){
+          this.gridOptions.api.setQuickFilter(value);
+        }else{
+          this.gridOptions.api.resetQuickFilter();
+        }
+        
+      }
+    )
    }
 
   ngOnInit() {
@@ -218,19 +229,7 @@ export class PlannedComponentsGridComponent implements OnInit, OnDestroy {
         this.colDefs.splice(ind, 1);
       }
     }
-
-    this.colDefs.push({
-      headerName: "Alert",
-      field: "Alert",
-      colId: "Alert",
-      sortable: true,
-      filter: "agTextColumnFilter",
-      resizable: true,
-      pinned: true,
-      cellStyle: params => this.cellStyle(params),
-      width: 50,
-      type: "textColumn",
-    });
+    this.colDefs.push(this.createColDef("Alert","Alert","agTextColumnFilter",true,50,undefined));
     
   }
 
@@ -533,12 +532,78 @@ export class PlannedComponentsGridComponent implements OnInit, OnDestroy {
   }
 
   createColDef(headerName: string, key: string, colFilter: string, isPinned: boolean, colWidth: number, colFormatter: any): ColDef{
+    let filterParams: any;
+    let filterOptions: any;
+
+    switch(colFilter){
+      case "agTextColumnFilter":
+        filterOptions = [
+          'contains',
+          'notContains',
+          'equals',
+          'notEqual',
+          'startsWith',
+          'endsWith',
+          {
+            displayKey: 'blanks',
+            displayName: 'Puste',
+            test: function (filterValue, cellValue) {
+                return cellValue == undefined || cellValue == null || cellValue == "";
+            },
+            hideFilterInput: true,
+          },
+          {
+            displayKey: 'notBlanks',
+            displayName: 'Nie puste',
+            test: function (filterValue, cellValue) {
+                return cellValue != undefined && cellValue != null && cellValue != "";
+            },
+            hideFilterInput: true,
+          }
+        ]
+        break;
+      case "agNumberColumnFilter":
+        filterOptions = [
+          'equals',
+          'notEqual',
+          'lessThan',
+          'lessThanOrEqual',
+          'greaterThan',
+          'greaterThanOrEqual',
+          'inRange',
+          {
+            displayKey: 'blanks',
+            displayName: 'Puste',
+            test: function (filterValue, cellValue) {
+                return cellValue == undefined || cellValue == null || cellValue == "";
+            },
+            hideFilterInput: true,
+          },
+          {
+            displayKey: 'notBlanks',
+            displayName: 'Nie puste',
+            test: function (filterValue, cellValue) {
+                return cellValue != undefined && cellValue != null && cellValue != "";
+            },
+            hideFilterInput: true,
+          }
+        ]
+        break;
+    }
+
+    filterParams = {
+      buttons: ['clear'],
+      filterOptions: filterOptions
+    }
+    
+
     let newCol = {
       headerName: headerName,
       field: key,
       colId: key,
       sortable: true,
       filter: colFilter,
+      filterParams: filterParams,
       resizable: true,
       pinned: isPinned,
       cellStyle: params => this.cellStyle(params),

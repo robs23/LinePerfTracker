@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { Settings } from '../settings';
 import { Subject } from 'rxjs';
 import { UserInteractionService } from '../services/userInteraction.service';
@@ -12,6 +12,7 @@ import { SettingsService } from '../services/settings.service';
 export class ComponentsComponent implements OnInit {
 
   settingsPageRef;
+  quickFilterValue = "";
 
   constructor(public settings: Settings, private userInteractionService: UserInteractionService, private settingsService: SettingsService) { }
 
@@ -34,6 +35,17 @@ export class ComponentsComponent implements OnInit {
 
   openSettingsPage(): void{
     this.settingsPageRef = this.settingsService.openSettingsPage();
+  }
+
+  updateQuickFilter(): void{
+
+    this.userInteractionService.emitComponentsPlanQuickFilterChanged(this.quickFilterValue);
+
+  }
+
+  clearQuickFilter(): void{
+    (document.getElementById('quick-filter-input') as HTMLInputElement).value = "";
+    this.updateQuickFilter();
   }
 
 }

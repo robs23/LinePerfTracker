@@ -9,6 +9,13 @@
     <button matTooltip="Pokaż/urkyj pokrycie planu dostawami" class="btn" [ngClass]="settings.PlanCoverageByDeliveries?'button-on':'button-off'" id="planCoverageByDeliveriesToggle" mat-mini-fab color="accent" (click)="toggleDeliveriesCoverage()">
       <mat-icon>moped</mat-icon>
     </button>
+    <mat-form-field appearance="standard">
+      <mat-label>Szukaj..</mat-label>
+      <input matInput id="quick-filter-input" (input)="updateQuickFilter()" (paste)="updateQuickFilter()" [(ngModel)]="quickFilterValue"/>
+      <!-- <button mat-icon-button matSuffix (click)="clearQuickFilter()">
+        <mat-icon>close</mat-icon>
+      </button> -->
+    </mat-form-field>
     <span class="title"><h1>Plan komponentów</h1></span>
     <div class="navbar-brand">
       <img id="logo" src="../linetracker/assets/JDE_CORP_MARK_RGB.png">
