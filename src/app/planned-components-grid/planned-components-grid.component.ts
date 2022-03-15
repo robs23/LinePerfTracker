@@ -37,6 +37,7 @@ export class PlannedComponentsGridComponent implements OnInit, OnDestroy {
   deliveriesCoverageClickedSub: Subscription;
   private gridOptions: GridOptions;
   firstPlanDate: Date = new Date(2100, 0,1);
+  lastPlanDate: Date = new Date(2010, 0, 1);
   componentPageRef;
   deliveryPreviewRef;
   realTimeStockCategories: string[] = ["Surowce"];
@@ -129,7 +130,7 @@ export class PlannedComponentsGridComponent implements OnInit, OnDestroy {
           this.PlannedComponentsSchedule = responseList[0];
           this.DeliveryItems = responseList[1];
           this.removeCoveredProduction()
-          this.setFirstPlanDate();
+          this.setFirstAndLastPlanDate();
           this.addInventoryAndCoverageEndColumns();
           this.setDynamicHeaders();
           this.recalculateAlert();
@@ -190,9 +191,8 @@ export class PlannedComponentsGridComponent implements OnInit, OnDestroy {
       }else{
         currDate = new Date(this.PlannedComponentsSchedule[i].Pokrycie);
       }
-      let hoursOfCoverage: number = this.settings.ComponentScheduleScope * 24 - 56; //128
-      let endDate = this.firstPlanDate.addHours(hoursOfCoverage);
-      if(currDate < endDate ){ //5 days + 8h
+
+      if(currDate < this.lastPlanDate ){ 
         this.PlannedComponentsSchedule[i].Alert = "Brak pokrycia";
       }else{
         let res = "";
@@ -364,7 +364,7 @@ export class PlannedComponentsGridComponent implements OnInit, OnDestroy {
     return res;
   }
 
-  setFirstPlanDate(): void{
+  setFirstAndLastPlanDate(): void{
     var p = this.PlannedComponentsSchedule[0];
     for(var key in p){
       if(p.hasOwnProperty(key)){
@@ -388,6 +388,9 @@ export class PlannedComponentsGridComponent implements OnInit, OnDestroy {
           let currDate = new Date(Number(year), Number(month)-1, Number(day), hour, 0, 0);
           if(currDate < this.firstPlanDate){
             this.firstPlanDate = currDate;
+          }
+          if(currDate > this.lastPlanDate){
+            this.lastPlanDate = currDate;
           }
         }
       }
@@ -547,6 +550,9 @@ export class PlannedComponentsGridComponent implements OnInit, OnDestroy {
 
   dateFormatter(params): string{
     let dateString = params.data.Pokrycie;
+    if(params.column.colId=="Pokrycie_dostawami"){
+      dateString = params.data.Pokrycie_dostawami;
+    }
     let date = new Date(dateString);
     return date.formatString();
   }
