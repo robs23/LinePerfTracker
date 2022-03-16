@@ -691,10 +691,43 @@ export class PlannedComponentsGridComponent implements OnInit, OnDestroy {
   }
 
   jasonToExcel(): void{
-    /* table id is passed over here */   
     var spinnerRef = this.spinnerService.start();
+
+    //convert all numeric values in PlannedComponentsSchedule to numbers
+    let numericArray = this.PlannedComponentsSchedule.map(nested => {
+      let objOrder: any = {};
+      objOrder.Produkt = null;
+      objOrder.Nazwa = null;
+      objOrder.Typ = null;
+      objOrder.Zapas = null;
+      objOrder.Pokrycie = null;
+      if(this.settings.PlanCoverageByDeliveries){
+        objOrder.Pokrycie_dostawami = null;
+      }
+      objOrder.Alert = null;
+
+      let nRow = JSON.parse(JSON.stringify(nested));
+      for(let key in nRow){
+        if(nRow.hasOwnProperty(key)){
+          if(!isNaN(nRow[key])){
+            // it's numeric value
+            nRow[key] = Number(nRow[key]);
+          }
+          if(key.includes("Pokrycie")){
+            //convert it into date format
+            nRow[key] = new Date(nRow[key]);
+          }
+
+        }
+      }
+      //reorder properties so that stock and other added props are at the beginning
+      nRow = Object.assign(objOrder, nRow);
+
+      return nRow;
+    });
+
     let ws: XLSX.WorkSheet;
-      ws =XLSX.utils.json_to_sheet(this.PlannedComponentsSchedule);
+      ws =XLSX.utils.json_to_sheet(numericArray);
 
     /* generate workbook and add the worksheet */
     const wb: XLSX.WorkBook = XLSX.utils.book_new();
