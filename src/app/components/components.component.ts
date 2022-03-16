@@ -33,6 +33,16 @@ export class ComponentsComponent implements OnInit {
     }
   }
 
+  toggleRemainingStockView(): void{
+    if(this.settings.RemainingStockView){
+      this.settings.RemainingStockView = false;
+      this.userInteractionService.emitRemainingStockViewToggled(false);
+    }else{
+      this.settings.RemainingStockView = true;
+      this.userInteractionService.emitRemainingStockViewToggled(true);
+    }
+  }
+
   openSettingsPage(): void{
     this.settingsPageRef = this.settingsService.openSettingsPage();
   }

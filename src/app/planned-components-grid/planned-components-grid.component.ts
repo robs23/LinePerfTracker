@@ -31,11 +31,13 @@ export class PlannedComponentsGridComponent implements OnInit, OnDestroy {
   InventorySnapshots: InventorySnapshot[];
   DeliveryItems: DeliveryItem[];
   PlannedComponentsSchedule: any[];
+  RemainingStockSchedule: any[];
   colDefs: ColDef[];
   exportButtonClickedSub: Subscription;
   settingsChangedSub: Subscription;
   deliveriesCoverageClickedSub: Subscription;
   quickFilterValueChangedSub: Subscription;
+  remainingStockViewToggledSub: Subscription;
   private gridOptions: GridOptions;
   firstPlanDate: Date = new Date(2100, 0,1);
   lastPlanDate: Date = new Date(2010, 0, 1);
@@ -60,14 +62,13 @@ export class PlannedComponentsGridComponent implements OnInit, OnDestroy {
         if(value){
           // on
           this.addDeliveriesCoverageColumn();
-          this.recalculateAlert();
-          this.gridOptions.api.setColumnDefs(this.colDefs);
         }else{
           //off
           this.remvoeDeliveriesCoverageColumn();
-          this.recalculateAlert();
-          this.gridOptions.api.setColumnDefs(this.colDefs);
         }
+        this.recalculateAlert();
+        this.gridOptions.api.setColumnDefs(this.colDefs);
+        this.present();
       }
     );
     this.quickFilterValueChangedSub = userInteractionService.ComponentsPlanQuickFilterChangedSubject.subscribe(
@@ -76,6 +77,16 @@ export class PlannedComponentsGridComponent implements OnInit, OnDestroy {
           this.gridOptions.api.setQuickFilter(value);
         }else{
           this.gridOptions.api.resetQuickFilter();
+        }
+        
+      }
+    );
+    this.remainingStockViewToggledSub = userInteractionService.RemainingStockViewToggledSubject.subscribe(
+      value => {
+        if(value){
+          this.presentAsStocks();
+        }else{
+          this.presentAsDemand();
         }
         
       }
@@ -947,6 +958,62 @@ export class PlannedComponentsGridComponent implements OnInit, OnDestroy {
         }
       }
     }
+  }
+
+  present(): void{
+    if(this.settings.RemainingStockView){
+      this.presentAsStocks();
+    }else{
+      this.presentAsDemand();
+    }
+  }
+
+  presentAsStocks(): void{
+    this.convertDemandToRemainigStock();
+    this.gridOptions.api.setRowData(this.RemainingStockSchedule);
+  }
+
+  presentAsDemand(): void{
+    this.gridOptions.api.setRowData(this.PlannedComponentsSchedule);
+  }
+
+  convertDemandToRemainigStock(): void{
+    this.RemainingStockSchedule = []; //claer it first
+    for(let i=0; i < this.PlannedComponentsSchedule.length; i++){
+      //regular fields
+      let newItem: any = {};
+      newItem.Produkt = this.PlannedComponentsSchedule[i].Produkt;
+      newItem.Nazwa = this.PlannedComponentsSchedule[i].Nazwa;
+      newItem.Typ = this.PlannedComponentsSchedule[i].Typ;
+      newItem.Zapas = this.PlannedComponentsSchedule[i].Zapas;
+      newItem.Pokrycie = this.PlannedComponentsSchedule[i].Pokrycie;
+      newItem.Pokrycie_dostawami = this.PlannedComponentsSchedule[i].Pokrycie_dostawami;
+      newItem.Alert = this.PlannedComponentsSchedule[i].Alert;
+
+      let stock = newItem.Zapas;
+
+      //irregular fields
+      for(let key in this.PlannedComponentsSchedule[i]){
+        if(this.PlannedComponentsSchedule[i].hasOwnProperty(key)){
+          if(key.includes("__")){
+            stock = stock - this.PlannedComponentsSchedule[i][key];
+            if(this.settings.PlanCoverageByDeliveries){
+              let currDate: Date = this.colIdToDate(key);
+              if(currDate != undefined){
+                let hour = currDate.getHours();
+                if(hour == this.settings.DeliveryHour){
+                  let delivery = this.getDelivery(newItem.Produkt, currDate.addHours(hour*-1));
+                  stock += delivery;
+                }
+              }
+            }
+            newItem[key] = stock;
+          }
+        }
+      }
+      this.RemainingStockSchedule.push(newItem);
+    }
+
   }
 
 }

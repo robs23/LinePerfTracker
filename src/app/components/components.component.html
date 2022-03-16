@@ -9,6 +9,9 @@
     <button matTooltip="Pokaż/urkyj pokrycie planu dostawami" class="btn" [ngClass]="settings.PlanCoverageByDeliveries?'button-on':'button-off'" id="planCoverageByDeliveriesToggle" mat-mini-fab color="accent" (click)="toggleDeliveriesCoverage()">
       <mat-icon>moped</mat-icon>
     </button>
+    <button matTooltip="Włącz/wyłącz widok zapasu pozostałego na koniec zmiany" class="btn" [ngClass]="settings.RemainingStockView?'button-on':'button-off'" id="remainingStockViewToggle" mat-mini-fab color="accent" (click)="toggleRemainingStockView()">
+      <mat-icon>warehouse</mat-icon>
+    </button>
     <mat-form-field appearance="standard">
       <mat-label>Szukaj..</mat-label>
       <input matInput id="quick-filter-input" (input)="updateQuickFilter()" (paste)="updateQuickFilter()" [(ngModel)]="quickFilterValue"/>

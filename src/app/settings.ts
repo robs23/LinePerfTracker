@@ -10,4 +10,5 @@ export class Settings {
   LowStockPercentageAlert: number = localStorage.getItem("LowStockPercentageAlert") ? Number(localStorage.getItem("LowStockPercentageAlert")) : 20; //stock at the end of shift / beginning stock. If lower than this parameter, alert
   LateDeliveryHoursAlert: number = localStorage.getItem("LateDeliveryHoursAlert") ? Number(localStorage.getItem("LateDeliveryHoursAlert")) : 24; //delivery must be 8 hours before coverage ends, otherwise alert
   DeliveryHour: number = localStorage.getItem("DeliveryHour") ? Number(localStorage.getItem("DeliveryHour")) : 14; //assumes deliveries on 2nd shift (14:00 - 22:00)
+  RemainingStockView: boolean = false;
 }

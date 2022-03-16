@@ -12,6 +12,7 @@ export class UserInteractionService {
   PlanCoverageByDeliveriesClickedSubject: Subject<boolean> = new Subject<boolean>();
   ComponentsPlanSettingsChangedSubject: Subject<boolean> = new Subject<boolean>();
   ComponentsPlanQuickFilterChangedSubject: Subject<string> = new Subject<string>();
+  RemainingStockViewToggledSubject: Subject<boolean> = new Subject<boolean>();
 
   autoUpdateClicked$ = this.AutoUpdateClickedSubject.asObservable();
   tabSwitchClicked$ = this.TabSwitchClickedSubject.asObservable();
@@ -19,6 +20,7 @@ export class UserInteractionService {
   coverageByDeliveriesClicked$ = this.PlanCoverageByDeliveriesClickedSubject.asObservable();
   componentsPlanSettingsChanged$ = this.ComponentsPlanSettingsChangedSubject.asObservable();
   componentsPlanQuickFilterChanged$ = this.ComponentsPlanQuickFilterChangedSubject.asObservable();
+  remainingStockViewToggled$ = this.RemainingStockViewToggledSubject.asObservable();
 
   emitAutoUpdateClicked(value: boolean){
     this.AutoUpdateClickedSubject.next(value);
@@ -42,6 +44,10 @@ export class UserInteractionService {
 
   emitComponentsPlanQuickFilterChanged(value: string){
     this.ComponentsPlanQuickFilterChangedSubject.next(value);
+  }
+
+  emitRemainingStockViewToggled(value: boolean){
+    this.RemainingStockViewToggledSubject.next(value);
   }
 
 }
